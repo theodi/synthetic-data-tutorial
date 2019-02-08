@@ -62,6 +62,8 @@ def gen_datetime(min_year=2019, max_year=datetime.now().year):
     random_datetime = start + (end - start) * random.random()
     return random_datetime
 
+
+
 # Arrival date, arrival time
 
 
