@@ -47,7 +47,7 @@ Voila! That's it. You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data`
 
 ## Anonymisation Steps
 
-For this stage we're going to be loosely following how the NHS itself used anonymisation techniques when creating their synthetic data.
+For this stage we're going to be loosely following [the anonymisation techniques used when creating NHS synthetic data for A&H in England](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
 ### Where a patient lives
   
