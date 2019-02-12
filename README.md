@@ -73,7 +73,7 @@ Explain Bayesian Networks.
 
 ### Random mode - generate random values for this column
 
-### Independent attritute mode - keep the patterns of each individual column
+### Independent attribute mode - keep the patterns of each individual column
 
 ### Correlated attribute mode - include correlations between columns in the data
 
