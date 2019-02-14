@@ -38,7 +38,7 @@ pip install -r requirements.txt
 Now let's create the actual data we'll use.
 
 ```bash
-python workshop/generate.py
+python tutorial/generate.py
 ```
 
 Voila! That's it. You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse.
