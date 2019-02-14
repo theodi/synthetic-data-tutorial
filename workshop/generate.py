@@ -22,15 +22,15 @@ num_of_rows = 10000
 
 def main():
     mock_nhs_ae_dataset = {}
-    mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
     mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
     (mock_nhs_ae_dataset['Arrival Date'], 
         mock_nhs_ae_dataset['Arrival Time']) = generate_arrival_dates_times()
     mock_nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+    mock_nhs_ae_dataset['Treatment'] = generate_treatments()
     mock_nhs_ae_dataset['Gender'] = generate_genders()
     mock_nhs_ae_dataset['Age'] = generates_ages()
-    mock_nhs_ae_dataset['Treatment'] = generate_treatments()
     mock_nhs_ae_dataset['Ethnicity'] = generate_ethnicities()
+    mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
 
     write_out_dataset(mock_nhs_ae_dataset, filepaths.mock_nhs_ae_dataset)
 
