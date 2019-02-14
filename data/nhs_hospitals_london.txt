@@ -1,10 +1,10 @@
 Atkinson Morley Hospital
 Banstead Hospital
-Barnes Hospital, London
+Barnes Hospital
 Barnet Hospital
 Bethlem Royal Hospital
 Bexley Hospital
-Bexley Hospital, Bexleyheath
+Bexley Hospital Bexleyheath
 Bromley Hospital
 Brook General Hospital
 Cassel Hospital
@@ -32,14 +32,14 @@ University College Hospital at Westmoreland Street
 Hillingdon Hospital
 Homerton University Hospital
 Hospital for Tropical Diseases
-King George Hospital, London
+King George Hospital
 King's College Hospital
 Kingston Hospital
 Lambeth Hospital
 London Chest Hospital
 London Lock Hospital
 Maudsley Hospital
-Memorial Hospital, Woolwich
+Memorial Hospital
 Metropolitan Free Hospital
 Michael Rutter Centre for Children and Adolescents
 Middlesex Hospital
@@ -54,9 +54,9 @@ Oldchurch Hospital
 Princess Royal University Hospital
 Queen Charlotte's and Chelsea Hospital
 Queen Elizabeth Hospital for Children
-Queen Elizabeth Hospital, Woolwich
-Queen Mary's Hospital, Roehampton
-Queen Mary's Hospital, Sidcup
+Queen Elizabeth Hospital Woolwich
+Queen Mary's Hospital Roehampton
+Queen Mary's Hospital Sidcup
 Queen's Hospital
 Richmond Royal Hospital
 Royal Brompton Hospital
@@ -65,23 +65,23 @@ Royal London Hospital
 Royal London Hospital for Integrated Medicine
 Royal Marsden Hospital
 Royal National Orthopaedic Hospital
-Royal National Throat, Nose and Ear Hospital
+Royal National Throat Nose and Ear Hospital
 Rush Green Hospital
 St Ann's Hospital
 St Bartholomew's Hospital
 St George's Hospital
-St George's Hospital, Havering
+St George's Hospital Havering
 St Helier Hospital
 St Mark's Hospital
-St Mary's Hospital, London
+St Mary's Hospital
 St Pancras Hospital
 St Thomas' Hospital
 Springfield University Hospital
 St Alfege's Hospital
-St Bernard's Hospital, Hanwell
+St Bernard's Hospital
 St Charles' Hospital
 St Giles' Hospital
-St James' Hospital, Balham
+St James' Hospital
 Teddington Memorial Hospital
 The Gordon Hospital
 Thorpe Coombe Hospital
