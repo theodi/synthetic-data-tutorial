@@ -1,4 +1,4 @@
-# Synthetic Data Workshop
+# Synthetic Data Tutorial
 
 ## Usage
 

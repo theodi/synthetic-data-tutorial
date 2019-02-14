@@ -17,6 +17,7 @@ import filepaths
 
 # TODO: add in probabilities for each of these 
 # TODO: give hospitals different average waiting times
+# TODO: add NHS numbers
 
 num_of_rows = 10000
 
