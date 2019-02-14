@@ -18,18 +18,22 @@ import filepaths
 # TODO: add in probabilities for each of these 
 # TODO: give hospitals different average waiting times
 
-num_of_rows = 50
+num_of_rows = 10000
 
 def main():
-    # postcodes = generate_postcodes()
-    # hospitals = generate_hospitals()
-    # arrival_dates, arrival_times = generate_arrival_dates_times()
-    # times_in_ae = generate_times_in_ae()
-    # genders = generate_gender_codes()
-    # ages = generates_ages()
-    # treatment_codes = generate_treatment_codes()
-    ethnicities = generate_ethnicities()
-    breakpoint()
+    mock_nhs_ae_dataset = {}
+    mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
+    mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
+    (mock_nhs_ae_dataset['Arrival Date'], 
+        mock_nhs_ae_dataset['Arrival Time']) = generate_arrival_dates_times()
+    mock_nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+    mock_nhs_ae_dataset['Gender'] = generate_genders()
+    mock_nhs_ae_dataset['Age'] = generates_ages()
+    mock_nhs_ae_dataset['Treatment'] = generate_treatments()
+    mock_nhs_ae_dataset['Ethnicity'] = generate_ethnicities()
+
+    write_out_dataset(mock_nhs_ae_dataset, filepaths.mock_nhs_ae_dataset)
+
 
 def generate_postcodes() -> list:
     ''' Reads a .csv containing info on every London postcode. Reads the 
@@ -76,70 +80,63 @@ def generate_times_in_ae() -> list:
     return times_in_ae
 
 
-def generate_gender_codes() -> list:
+def generate_genders() -> list:
     # national codes for gender in NHS data
     # https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1
-    gender_codes = random.choices(
-        [0, 1, 2, 9], k=num_of_rows, weights=[0.01, 0.49, 0.49, 0.01]
-    )
+    gender_codes_df = pd.read_csv(filepaths.nhs_ae_gender_codes)
+    genders = gender_codes_df['Gender'].tolist()
+    weights =[0.005, 0.495, 0.495, 0.005]
+    gender_codes = random.choices(genders, k=num_of_rows, weights=weights)
     return gender_codes
 
 
 def generates_ages() -> list:
-    # UK population age groups percentages
-    # https://www.ethnicity-facts-figures.service.gov.uk/british-population/demographics/age-groups/latest
+    # London population age groups populations. based on 2011 census
+    # https://data.london.gov.uk/dataset/census-2011-population-age-uk-districts
+    age_population_london_df = pd.read_csv(filepaths.age_population_london)
+    weights = age_population_london_df['Population'].tolist()
+    age_brackets_start = [
+        int(age_bracket.split('-')[0]) 
+        for age_bracket in
+        age_population_london_df['Age bracket'].tolist()
+    ]
     age_brackets = random.choices(
-        [0, 5, 10, 15, 18, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
-        k=num_of_rows, 
-        weights=[0.062, 0.056, 0.058, 0.037, 0.094, 0.068, 0.066, 0.067, 0.073, 0.073,
-            0.064, 0.057, 0.06, 0.048, 0.039, 0.032, 0.024, 0.022]
-    )
+        age_brackets_start, k=num_of_rows, weights=weights)
     ages = [generate_age(age_bracket) for age_bracket in age_brackets]
     return ages
 
 
-def generate_age(age_bracket: int) -> int:
-    if age_bracket == 0: return random.randint(0, 4)
-    elif age_bracket == 5: return random.randint(5, 9) 
-    elif age_bracket == 10: return random.randint(10, 14) 
-    elif age_bracket == 15: return random.randint(15, 17) 
-    elif age_bracket == 18: return random.randint(18, 24) 
-    elif age_bracket == 25: return random.randint(25, 29) 
-    elif age_bracket == 30: return random.randint(30, 34) 
-    elif age_bracket == 35: return random.randint(35, 39) 
-    elif age_bracket == 40: return random.randint(40, 44) 
-    elif age_bracket == 45: return random.randint(45, 49) 
-    elif age_bracket == 50: return random.randint(50, 54) 
-    elif age_bracket == 55: return random.randint(55, 59) 
-    elif age_bracket == 60: return random.randint(60, 64) 
-    elif age_bracket == 65: return random.randint(65, 69) 
-    elif age_bracket == 70: return random.randint(70, 74) 
-    elif age_bracket == 75: return random.randint(75, 79) 
-    elif age_bracket == 80: return random.randint(80, 84) 
-    elif age_bracket == 85: return random.randint(85, 100) 
+def generate_age(age: int) -> int:
+    if age == 90: 
+        return random.randint(90, 100) 
+    else:
+        return random.randint(age, age+4)
 
 
-def generate_treatment_codes():
+def generate_treatments() -> list:
     # treatment codes found here:
     # https://www.datadictionary.nhs.uk/web_site_content/supporting_information/clinical_coding/accident_and_emergency_treatment_tables.asp?shownav=1
     treatment_codes_df = pd.read_csv(filepaths.nhs_ae_treatment_codes)
-    treatment_codes = treatment_codes_df['code'].tolist()
-    treatment_codes = random.choices(treatment_codes, k=num_of_rows)
+    treatments = treatment_codes_df['Treatment'].tolist()
+    treatment_codes = random.choices(treatments, k=num_of_rows)
     return treatment_codes
 
 
-def generate_ethnicities():
+def generate_ethnicities() -> list:
     # based on the 2011 census
     # https://en.wikipedia.org/wiki/Demography_of_London#Ethnicity
     london_ethnicities_df = pd.read_csv(filepaths.london_ethnicities)
     ethnic_groups = london_ethnicities_df['Ethnic Group']
     percentages = london_ethnicities_df['Percentage'].tolist()
-    probabilities = [pct / 100. for pct in percentages]
-
     ethnicities = random.choices(
-        ethnic_groups, weights=ethnic_groups, k=num_of_rows)
+        ethnic_groups, weights=percentages, k=num_of_rows)
 
-    breakpoint()
+    return ethnicities
+
+
+def write_out_dataset(dataset, filepath):
+    df = pd.DataFrame.from_dict(dataset)
+    df.to_csv(filepath, index=False)
 
 
 if __name__ == "__main__":
