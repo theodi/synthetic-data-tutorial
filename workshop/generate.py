@@ -85,6 +85,7 @@ def generate_genders() -> list:
     # https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1
     gender_codes_df = pd.read_csv(filepaths.nhs_ae_gender_codes)
     genders = gender_codes_df['Gender'].tolist()
+    # these weights are just dummy values. please don't take them as accurate.
     weights =[0.005, 0.495, 0.495, 0.005]
     gender_codes = random.choices(genders, k=num_of_rows, weights=weights)
     return gender_codes
