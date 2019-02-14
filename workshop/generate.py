@@ -21,6 +21,7 @@ import filepaths
 num_of_rows = 10000
 
 def main():
+    print('generating data...')
     mock_nhs_ae_dataset = {}
     mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
     (mock_nhs_ae_dataset['Arrival Date'], 
@@ -33,6 +34,8 @@ def main():
     mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
 
     write_out_dataset(mock_nhs_ae_dataset, filepaths.mock_nhs_ae_dataset)
+
+    print('done.')
 
 
 def generate_postcodes() -> list:
