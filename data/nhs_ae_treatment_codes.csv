@@ -1,3 +1,4 @@
+Treatment,code
 Dressing,01
 Bandage/support,02
 Sutures,03
@@ -17,7 +18,7 @@ Urinary catheter/suprapubic,17
 Defibrillation/pacing,18
 Resuscitation/cardiopulmonary resuscitation,19
 Minor surgery,20
-Observation/electrocardiogram, pulse oximetry/head injury/trends,21
+Observation/electrocardiogram pulse oximetry/head injury/trends,21
 Guidance/advice only,22
 Anaesthesia,23
 Tetanus,24

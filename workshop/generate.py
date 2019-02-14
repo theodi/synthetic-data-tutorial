@@ -21,13 +21,14 @@ import filepaths
 num_of_rows = 50
 
 def main():
-    postcodes = generate_postcodes()
-    hospitals = generate_hospitals()
-    arrival_dates, arrival_times = generate_arrival_dates_times()
-    times_in_ae = generate_times_in_ae()
-    genders = generate_gender_codes()
-    ages = generates_ages()
-    treatment_codes = generate_treatment_codes()
+    # postcodes = generate_postcodes()
+    # hospitals = generate_hospitals()
+    # arrival_dates, arrival_times = generate_arrival_dates_times()
+    # times_in_ae = generate_times_in_ae()
+    # genders = generate_gender_codes()
+    # ages = generates_ages()
+    # treatment_codes = generate_treatment_codes()
+    ethnicities = generate_ethnicities()
     breakpoint()
 
 def generate_postcodes() -> list:
@@ -116,6 +117,29 @@ def generate_age(age_bracket: int) -> int:
     elif age_bracket == 75: return random.randint(75, 79) 
     elif age_bracket == 80: return random.randint(80, 84) 
     elif age_bracket == 85: return random.randint(85, 100) 
+
+
+def generate_treatment_codes():
+    # treatment codes found here:
+    # https://www.datadictionary.nhs.uk/web_site_content/supporting_information/clinical_coding/accident_and_emergency_treatment_tables.asp?shownav=1
+    treatment_codes_df = pd.read_csv(filepaths.nhs_ae_treatment_codes)
+    treatment_codes = treatment_codes_df['code'].tolist()
+    treatment_codes = random.choices(treatment_codes, k=num_of_rows)
+    return treatment_codes
+
+
+def generate_ethnicities():
+    # based on the 2011 census
+    # https://en.wikipedia.org/wiki/Demography_of_London#Ethnicity
+    london_ethnicities_df = pd.read_csv(filepaths.london_ethnicities)
+    ethnic_groups = london_ethnicities_df['Ethnic Group']
+    percentages = london_ethnicities_df['Percentage'].tolist()
+    probabilities = [pct / 100. for pct in percentages]
+
+    ethnicities = random.choices(
+        ethnic_groups, weights=ethnic_groups, k=num_of_rows)
+
+    breakpoint()
 
 
 if __name__ == "__main__":
