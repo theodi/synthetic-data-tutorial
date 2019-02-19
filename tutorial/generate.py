@@ -33,7 +33,7 @@ def main():
     mock_nhs_ae_dataset['Ethnicity'] = generate_ethnicities()
     mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
 
-    write_out_dataset(mock_nhs_ae_dataset, filepaths.mock_nhs_ae_dataset)
+    write_out_dataset(mock_nhs_ae_dataset, filepaths.nhs_ae_dataset_mock)
 
     print('done.')
 
