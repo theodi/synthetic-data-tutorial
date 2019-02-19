@@ -30,7 +30,6 @@ def main():
     mock_nhs_ae_dataset['Treatment'] = generate_treatments()
     mock_nhs_ae_dataset['Gender'] = generate_genders()
     mock_nhs_ae_dataset['Age'] = generates_ages()
-    mock_nhs_ae_dataset['Ethnicity'] = generate_ethnicities()
     mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
 
     write_out_dataset(mock_nhs_ae_dataset, filepaths.nhs_ae_dataset_mock)
@@ -123,18 +122,6 @@ def generate_treatments() -> list:
     treatments = treatment_codes_df['Treatment'].tolist()
     treatment_codes = random.choices(treatments, k=num_of_rows)
     return treatment_codes
-
-
-def generate_ethnicities() -> list:
-    # based on the 2011 census
-    # https://en.wikipedia.org/wiki/Demography_of_London#Ethnicity
-    london_ethnicities_df = pd.read_csv(filepaths.london_ethnicities)
-    ethnic_groups = london_ethnicities_df['Ethnic Group']
-    percentages = london_ethnicities_df['Percentage'].tolist()
-    ethnicities = random.choices(
-        ethnic_groups, weights=percentages, k=num_of_rows)
-
-    return ethnicities
 
 
 def write_out_dataset(dataset, filepath):
