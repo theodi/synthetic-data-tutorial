@@ -25,8 +25,7 @@ def main():
     print('generating data...')
     mock_nhs_ae_dataset = {}
     mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
-    (mock_nhs_ae_dataset['Arrival Date'], 
-        mock_nhs_ae_dataset['Arrival Time']) = generate_arrival_dates_times()
+    mock_nhs_ae_dataset['Arrival Time'] = generate_arrival_dates_times()
     mock_nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
     mock_nhs_ae_dataset['Treatment'] = generate_treatments()
     mock_nhs_ae_dataset['Gender'] = generate_genders()
@@ -63,16 +62,15 @@ def generate_hospitals() -> list:
 
 def generate_arrival_dates_times() -> (list, list):
     # hardcoding times to first week of April 2019
-    arrival_dates, arrival_times = [], []
+    arrival_times = []
     start = datetime(2019, 4, 1, 00, 00, 00)
     end = datetime(2019, 4, 6, 23, 59, 59)
 
     for _ in range(num_of_rows):
         random_datetime = start + (end - start) * random.random()
-        arrival_dates.append(random_datetime.strftime('%Y-%m-%d'))
-        arrival_times.append(random_datetime.strftime('%H:%M:%S'))
+        arrival_times.append(random_datetime.strftime('%Y-%m-%d %H:%M:%S'))
 
-    return arrival_dates, arrival_times
+    return arrival_times
 
 
 def generate_times_in_ae() -> list:
