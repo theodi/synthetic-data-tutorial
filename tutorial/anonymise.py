@@ -19,13 +19,13 @@ def main():
     nhs_london_ae_df = remove_non_male_or_female(nhs_london_ae_df)
     nhs_london_ae_df = add_age_brackets(nhs_london_ae_df)
 
-    nhs_london_ae_df.to_csv(filepaths.nhs_ae_dataset_anonymous, index=False)
+    nhs_london_ae_df.to_csv(filepaths.nhs_ae_anonymous, index=False)
 
     print('done.')
 
 
 def load_nhs_london_ae_data():
-    nhs_london_ae_df = pd.read_csv(filepaths.nhs_ae_dataset_mock)
+    nhs_london_ae_df = pd.read_csv(filepaths.nhs_ae_mock)
     return nhs_london_ae_df
 
 
