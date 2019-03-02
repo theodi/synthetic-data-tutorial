@@ -84,7 +84,7 @@ def sample_data(nhs_df, frac=0.5):
 
 def put_time_in_4_hour_bins(nhs_df):
     arrival_times = pd.to_datetime(nhs_df['Arrival Time'])        
-    nhs_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
+    nhs_df['Arrival Date'] = arrival_times.dt.strftime('%A')
     nhs_df['Arrival Hour'] = arrival_times.dt.hour
 
     nhs_df['Arrival hour range'] = pd.cut(

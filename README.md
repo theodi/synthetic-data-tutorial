@@ -83,3 +83,9 @@ Explain Bayesian Networks.
 
 - How are you going to monitor it
 - Shoehorn in a bunch of UKAN steps 10 to 12 type questions
+
+### References
+
+- [A comparative study of synthetic dataset generation techniques](https://dl.comp.nus.edu.sg/bitstream/handle/1900.100/7050/TRA6-18.pdf?sequence=1&isAllowed=y) - Ashish Dandekar, Remmy A. M. Zen, Stéphane Bressan
+- [Exploring methods for synthetic A&E data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data) - Jonathan Pearson from the NHS with Open Data Institute Leeds
+- 
