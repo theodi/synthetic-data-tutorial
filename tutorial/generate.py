@@ -8,6 +8,8 @@ https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-
 import os
 import random
 from datetime import datetime, timedelta
+import uuid
+import random, string
 
 import pandas as pd
 import numpy as np
@@ -24,6 +26,7 @@ num_of_rows = 10000
 def main():
     print('generating data...')
     mock_nhs_ae_dataset = {}
+    mock_nhs_ae_dataset['Attendance ID'] = generate_admission_ids()
     mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
     mock_nhs_ae_dataset['Arrival Time'] = generate_arrival_dates_times()
     mock_nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
@@ -35,6 +38,15 @@ def main():
     write_out_dataset(mock_nhs_ae_dataset, filepaths.nhs_ae_mock)
 
     print('done.')
+
+
+def generate_admission_ids():
+
+    uids = []
+    for _ in range(num_of_rows):    
+        x = ''.join(random.choice(string.digits) for _ in range(10))
+        uids.append(x)
+    return uids
 
 
 def generate_postcodes() -> list:

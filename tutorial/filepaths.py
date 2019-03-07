@@ -19,5 +19,11 @@ age_population_london = os.path.join(data_dir, 'age_population_london.csv')
 
 nhs_ae_mock = os.path.join(data_dir, 'nhs_ae_mock.csv')
 nhs_ae_anonymous = os.path.join(data_dir, 'nhs_ae_anonymous.csv')
-nhs_ae_synthetic = os.path.join(data_dir, 'nhs_ae_synthetic.csv')
-nhs_ae_description = os.path.join(data_dir, 'nhs_ae_description.csv')
+
+nhs_ae_synthetic_random = os.path.join(data_dir, 'nhs_ae_synthetic_random.csv')
+nhs_ae_synthetic_independent = os.path.join(data_dir, 'nhs_ae_synthetic_independent.csv')
+nhs_ae_synthetic_correlated = os.path.join(data_dir, 'nhs_ae_synthetic_correlated.csv')
+
+nhs_ae_description_random = os.path.join(data_dir, 'nhs_ae_description_random.json')
+nhs_ae_description_independent = os.path.join(data_dir, 'nhs_ae_description_independent.json')
+nhs_ae_description_correlated = os.path.join(data_dir, 'nhs_ae_description_correlated.json')

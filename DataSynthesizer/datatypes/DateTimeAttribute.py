@@ -36,8 +36,6 @@ class DateTimeAttribute(AbstractAttribute):
         epoch_datetime = parse('1970-01-01')
         self.timestamps = self.data_dropna.map(lambda x: int((parse(x) - epoch_datetime).total_seconds()))
 
-        breakpoint()
-
     def infer_domain(self, categorical_domain=None, numerical_range=None):
         if numerical_range:
             self.min, self.max = numerical_range
