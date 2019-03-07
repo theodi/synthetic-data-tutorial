@@ -15,6 +15,7 @@ It's data's that is created by an automated process which contains many of the s
 For any person who programs who wants to learn about data anonymisation in general or more specifically about synthetic data.
 
 **What is it not for?**
+
 Non-programmers. Although I think this tutorial is still worth a browse to get some of the main ideas in what goes in to anonymising a dataset. However, if you're looking for info on how to create synthetic data using the latest and greatest deep learning techniques, this is not the tutorial for you.
 
 **Who are you?**
@@ -23,7 +24,7 @@ We're the Open Data Institute. We work with companies and governments to build a
 
 **Why did you make this?**
 
-We have an [R&D programme](https://theodi.org/project/data-innovation-for-uk-research-and-development/) that looks in to how to support innovation, improve data infrastructure and encourage ethical data sharing. One of the projects within this is about [managing the risks of re-identification](https://theodi.org/project/rd-broaden-access-to-personal-data-while-protecting-privacy-and-creating-a-fair-market/) in shared and open data. As you can see in the "Key outputs" section, we have other material from the project, but we thought it'd be good to have something specifically aimed specifically at programming people interested in anonymisation and want to get stuck in and learn by doing.
+We have an [R&D programme](https://theodi.org/project/data-innovation-for-uk-research-and-development/) that has a number of projects looking in to how to support innovation, improve data infrastructure and encourage ethical data sharing. One of our projects is about [managing the risks of re-identification](https://theodi.org/project/rd-broaden-access-to-personal-data-while-protecting-privacy-and-creating-a-fair-market/) in shared and open data. As you can see in the "Key outputs" section, we have other material from the project, but we thought it'd be good to have something specifically aimed at programmmers interested in learning by doing.
 
 **Speaking of which, can I just get to the tutorial now?**
 
@@ -31,14 +32,14 @@ Sure! Let's go.
 
 ## Overview
 
-This tutorial is inspired by the [NHS England with ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data.
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data.
 
-Just to be clear, we're not using their exact data, but create our own simplified version of it.
+Just to be clear, we're not using their exact data, but create our own simplified version of it. One, it's easier to learn this way and, two, we of course don't have access to original, highly sensitive A&E data.
 
 In this tutorial you will:
 
-1. Create an A&E dataset which will contain personal information.
-2. Run some anonymisation steps over this dataset to generate a new dataset.
+1. Create an A&E admissions dataset which will contain personal information.
+2. Run some anonymisation steps over this dataset to generate a new dataset with much less re-identification risk.
 3. Take this pseudoanonymous dataset and generate multiple synthetic datasets from it.
 
 ### Setup
@@ -59,13 +60,33 @@ pip install -r requirements.txt
 
 ### Generate mock NHS A&E dataset
 
-Now let's create the actual data we'll use.
+You can use the `data/nhs_ae_mock.csv` as it is but preferably you should generate your own fresh dataset. At the very least look through the code in `tutorial/generate.py`.
+
+If you do want to generate your own unique data, you'll need to download one dataset first. It's a list of all postcodes in London. You can find it at this page on [doogal.co.uk](https://www.doogal.co.uk/PostcodeDownloads.php), at the _London_ link under the _By English region_ section. Or just download it directly at [this link](https://www.doogal.co.uk/UKPostcodesCSV.ashx?region=E12000007) (just take note, it's 133MB in size).
+
+Then place the `London postcodes.csv` file in to the `synthetic_data_workshop/data` directory.
+
+```bash
+mv "/path/to/dataset/London postcodes" /path/to/repo/synthetic-data-workshop/data
+```
+
+Next simply go to the project root directory and run the `generate.py` script.
 
 ```bash
 python tutorial/generate.py
 ```
 
-Voila! That's it. You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse.
+Voila!. You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
+
+- Attendance ID
+- Hospital
+- Arrival Time
+- Time in A&E (mins)
+- Treatment
+- Gender
+- Age
+- Postcode
+
 
 ---
 

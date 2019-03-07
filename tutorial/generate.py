@@ -1,7 +1,7 @@
 '''
-Script that generates data for you to run the exercise.
+Script that generates data for you to run the tutorial.
 
-Columns of data based on NHS+ODI Leeds blog post:
+Columns of data inpired by NHS+ODI Leeds blog post:
 https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data
 
 '''
@@ -19,7 +19,6 @@ import filepaths
 
 # TODO: add in probabilities for each of these 
 # TODO: give hospitals different average waiting times
-# TODO: add NHS numbers
 
 num_of_rows = 10000
 
