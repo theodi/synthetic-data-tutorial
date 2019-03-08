@@ -45,11 +45,24 @@ The practical steps involve:
 
 You may be wondering, why can't we just do synthetic data step? If it's synthetic and doesn't contain any personal information? Not exactly. Patterns picked up in the original data and transferred to the . This is especially true for outliers - for instance if  
 
+---
+
 ## Credit to others
 
 This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data. Just to be clear, we're not using their exact data, but create our own simple mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data!
 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. It's an excellent piece of software and their research is well worth checking out.  
+
+---
+
+## Definitions
+
+I'll use a number of technical words repeatedly in this tutorial. So it's best if we we agree on what they mean:
+
+- **Anonymisation:** ...
+- **De-identification:** ...
+- **Re-identification:** ...
+- ...
 
 ---
 
@@ -111,7 +124,11 @@ Because of this, we'll need to take some anonymisation steps.
 
 For this stage we're going to be loosely following the anonymisation techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
-### Where a patient lives
+We pass the data through the following de-identification process.
+
+1. **Remove NHS numbers:** NHS numbers are direct identifiers and should be removed.
+
+2. **Where a patient lives:** Postcodes, due to the number of people with them, are 
   
 ### Individual hospitals
 
