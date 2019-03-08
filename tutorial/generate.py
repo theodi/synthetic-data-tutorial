@@ -1,15 +1,17 @@
-'''
-Script that generates data for you to run the tutorial.
+"""
+Script that generates data to use in the synthetic data tutorial.
 
 Columns of data inpired by NHS+ODI Leeds blog post:
 https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data
 
-'''
+"""
+
 import os
 import random
 from datetime import datetime, timedelta
 import uuid
 import random, string
+import time
 
 import pandas as pd
 import numpy as np
@@ -17,43 +19,63 @@ import scipy.stats as stats
 
 import filepaths
 
-# TODO: add in probabilities for each of these 
+# TODO: add in probabilities for some attributes
+# TODO: add correlations between attributes
 # TODO: give hospitals different average waiting times
 
 num_of_rows = 10000
 
 def main():
     print('generating data...')
-    mock_nhs_ae_dataset = {}
-    mock_nhs_ae_dataset['Attendance ID'] = generate_admission_ids()
-    mock_nhs_ae_dataset['Hospital'] = generate_hospitals()
-    mock_nhs_ae_dataset['Arrival Time'] = generate_arrival_dates_times()
-    mock_nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
-    mock_nhs_ae_dataset['Treatment'] = generate_treatments()
-    mock_nhs_ae_dataset['Gender'] = generate_genders()
-    mock_nhs_ae_dataset['Age'] = generates_ages()
-    mock_nhs_ae_dataset['Postcode'] = generate_postcodes()
 
-    write_out_dataset(mock_nhs_ae_dataset, filepaths.nhs_ae_mock)
+    start = time.time()
 
-    print('done.')
+    nhs_ae_dataset = {}
+    nhs_ae_dataset['Attendance ID'] = generate_admission_ids()
+    nhs_ae_dataset['NHS number'] = generate_nhs_numbers()
+    nhs_ae_dataset['Hospital'] = generate_hospitals()
+    nhs_ae_dataset['Arrival Time'] = generate_arrival_times()
+    nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+    nhs_ae_dataset['Treatment'] = generate_treatments()
+    nhs_ae_dataset['Gender'] = generate_genders()
+    nhs_ae_dataset['Age'] = generates_ages()
+    nhs_ae_dataset['Postcode'] = generate_postcodes()
+
+    write_out_dataset(nhs_ae_dataset, filepaths.nhs_ae_data)
+
+    end = time.time()
+
+    print('done in ' + (end - start) + ' seconds.')
 
 
-def generate_admission_ids():
-
+def generate_admission_ids() -> list:
+    """ Generate a unique 10-digit ID for every admission record """
+    
     uids = []
     for _ in range(num_of_rows):    
         x = ''.join(random.choice(string.digits) for _ in range(10))
         uids.append(x)
     return uids
 
+def generate_nhs_numbers() -> list:
+    """ Generate dummy NHS numbers similar to 10 digit format
+    See: https://www.nhs.uk/using-the-nhs/about-the-nhs/what-is-an-nhs-number/
+    """
+    nhs_numbers = []
+    for _ in range(num_of_rows): 
+        nhs_number = ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
+        nhs_number = ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
+        nhs_number = ''.join(random.choice(string.digits) for _ in range(4))
+        nhs_numbers.append(nhs_number)
+    return nhs_numbers
+
 
 def generate_postcodes() -> list:
-    ''' Reads a .csv containing info on every London postcode. Reads the 
-    postcodes in use and returns them. 
-    '''
-    # Where a patient lives
-    # List of London postcodes retrieved from https://www.doogal.co.uk/PostcodeDownloads.php
+    """ Reads a .csv containing info on every London postcode. Reads the 
+    postcodes in use and returns a sample of them.
+
+    # List of London postcodes from https://www.doogal.co.uk/PostcodeDownloads.php
+    """
     postcodes_df = pd.read_csv(filepaths.postcodes_london)
     postcodes_in_use = list(postcodes_df[postcodes_df['In Use?'] == "No"]['Postcode'])
     postcodes = random.choices(postcodes_in_use, k=num_of_rows)
@@ -61,8 +83,12 @@ def generate_postcodes() -> list:
 
 
 def generate_hospitals() -> list:
-    # Individual Hospitals
-    # List of London NHS hospitals retrieved from https://en.wikipedia.org/wiki/Category:NHS_hospitals_in_London
+    """ Reads the data/hospitals_london.txt file, and generates a
+    sample of them to add to the dataset.
+
+    List of London NHS hospitals loosely based on 
+    https://en.wikipedia.org/wiki/Category:NHS_hospitals_in_London
+    """
     with open(filepaths.nhs_hospitals_london, 'r') as file_in:
         hospitals = file_in.readlines()
     hospitals = [name.strip() for name in hospitals]
@@ -70,8 +96,10 @@ def generate_hospitals() -> list:
     return hospitals
 
 
-def generate_arrival_dates_times() -> (list, list):
-    # hardcoding times to first week of April 2019
+def generate_arrival_times() -> list:
+    """ Generate and return arrival times.
+        Hardcoding times to first week of April 2019
+    """
     arrival_times = []
     start = datetime(2019, 4, 1, 00, 00, 00)
     end = datetime(2019, 4, 6, 23, 59, 59)
@@ -84,8 +112,13 @@ def generate_arrival_dates_times() -> (list, list):
 
 
 def generate_times_in_ae() -> list:
+    """ Generate and return length of times in A&E.
+    Method included tries to get a good spread around the mean without
+    going below 1 minute or above 720 minutes (chosen arbitrarily).
+    """
     lower, upper = 1, 720
     mu, sigma = 30, 100
+    # Normal distribution with upper and lower limits solution from stackoverflow
     # https://stackoverflow.com/questions/18441779/how-to-specify-upper-and-lower-limits-when-using-numpy-random-normal/44603019
     X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
     times_in_ae = X.rvs(num_of_rows).astype(int)
@@ -93,8 +126,11 @@ def generate_times_in_ae() -> list:
 
 
 def generate_genders() -> list:
-    # national codes for gender in NHS data
+    """ Generate and return list of genders for every row. 
+
+    # National codes for gender in NHS data
     # https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1
+    """
     gender_codes_df = pd.read_csv(filepaths.nhs_ae_gender_codes)
     genders = gender_codes_df['Gender'].tolist()
     # these weights are just dummy values. please don't take them as accurate.
@@ -104,8 +140,15 @@ def generate_genders() -> list:
 
 
 def generates_ages() -> list:
-    # London population age groups populations. based on 2011 census
+    """ Generate and return sample of ages 
+
+    Reads London age distribution file, generates ages based on those (max 100),
+    returns the list. 
+
+    # London population age groups populations based on 2011 census:
     # https://data.london.gov.uk/dataset/census-2011-population-age-uk-districts
+    """
+
     age_population_london_df = pd.read_csv(filepaths.age_population_london)
     weights = age_population_london_df['Population'].tolist()
     age_brackets_start = [
