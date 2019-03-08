@@ -17,12 +17,12 @@ nhs_ae_gender_codes = os.path.join(data_dir, 'nhs_ae_gender_codes.csv')
 london_ethnicities = os.path.join(data_dir, 'london_ethnicities.csv')
 age_population_london = os.path.join(data_dir, 'age_population_london.csv')
 
-nhs_ae_mock = os.path.join(data_dir, 'nhs_ae_mock.csv')
-nhs_ae_anonymous = os.path.join(data_dir, 'nhs_ae_anonymous.csv')
+nhs_ae_data = os.path.join(data_dir, 'nhs_ae_data.csv')
+nhs_ae_data_anonymous = os.path.join(data_dir, 'nhs_ae_data_anonymous.csv')
 
-nhs_ae_synthetic_random = os.path.join(data_dir, 'nhs_ae_synthetic_random.csv')
-nhs_ae_synthetic_independent = os.path.join(data_dir, 'nhs_ae_synthetic_independent.csv')
-nhs_ae_synthetic_correlated = os.path.join(data_dir, 'nhs_ae_synthetic_correlated.csv')
+nhs_ae_data_synthetic_random = os.path.join(data_dir, 'nhs_ae_data_synthetic_random.csv')
+nhs_ae_data_synthetic_independent = os.path.join(data_dir, 'nhs_ae_data_synthetic_independent.csv')
+nhs_ae_data_synthetic_correlated = os.path.join(data_dir, 'nhs_ae_data_synthetic_correlated.csv')
 
 nhs_ae_description_random = os.path.join(data_dir, 'nhs_ae_description_random.json')
 nhs_ae_description_independent = os.path.join(data_dir, 'nhs_ae_description_independent.json')
