@@ -1,4 +1,4 @@
-# Synthetic Data for Anonymisation Tutorial
+# Synthetic Data for Reducing Risk of Re-identification in Open Data Tutorial
 
 ## Some questions
 
@@ -30,19 +30,30 @@ We have an [R&D programme](https://theodi.org/project/data-innovation-for-uk-res
 
 Sure! Let's go.
 
+---
+
 ## Overview
 
-This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data.
+In this tutorial you are aiming to open A&E data. However, this data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and adapting identifying information in the data we can greatly reduce the risk that patients can be re-identified. 
 
-Just to be clear, we're not using their exact data, but create our own simplified version of it. One, it's easier to learn this way and, two, we of course don't have access to original, highly sensitive A&E data.
-
-In this tutorial you will:
+The practical steps involve:
 
 1. Create an A&E admissions dataset which will contain personal information.
 2. Run some anonymisation steps over this dataset to generate a new dataset with much less re-identification risk.
-3. Take this pseudoanonymous dataset and generate multiple synthetic datasets from it.
+3. Take this pseudoanonymous dataset and generate multiple synthetic datasets from it which reduces the re-identification risk even further.
+4. Analyse the synthetic datasets to see how similar they are to the original data and if they're still useful.
 
-### Setup
+You may be wondering, why can't we just do synthetic data step? If it's synthetic and doesn't contain any personal information? Not exactly. Patterns picked up in the original data and transferred to the . This is especially true for outliers - for instance if  
+
+## Credit to others
+
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data. Just to be clear, we're not using their exact data, but create our own simple mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data!
+
+Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. It's an excellent piece of software and their research is well worth checking out.  
+
+---
+
+## Setup
 
 First, make sure you have [Python3 installed](https://www.python.org/downloads/).
 
@@ -52,13 +63,15 @@ Change direcory in to the repo, install a virtualenv and install the dependent l
 
 ```bash
 cd /path/to/repo/synthetic_data_workshop/
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Generate mock NHS A&E dataset
+---
+
+## Generate mock NHS A&E dataset
 
 You can use the `data/nhs_ae_mock.csv` as it is but preferably you should generate your own fresh dataset. At the very least look through the code in `tutorial/generate.py`.
 
@@ -76,23 +89,27 @@ Next simply go to the project root directory and run the `generate.py` script.
 python tutorial/generate.py
 ```
 
-Voila!. You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
+Voila! You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
 
-- Attendance ID
-- Hospital
-- Arrival Time
-- Time in A&E (mins)
-- Treatment
-- Gender
-- Age
-- Postcode
+- **Attendance ID**: a unique ID generated for every admission to A&E
+- **NHS number**: NHS number of the admitted patient  
+- **Hospital**: which hospital admitted the patient
+- **Arrival Time**: what time and date the patient was admitted
+- **Time in A&E (mins)**: time (in minutes) of how long the patient spent in A&E
+- **Treatment**: what the person was treated for
+- **Gender**: patient gender, see [NHS patient gender codes](https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1)
+- **Age**: age of patient
+- **Postcode**: postcode of patient
 
+We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's NHS numbers were to be leaked in future, lots of people could be re-identified.
+
+Because of this, we'll need to take some anonymisation steps.
 
 ---
 
 ## Anonymisation Steps
 
-For this stage we're going to be loosely following [the anonymisation techniques used when creating NHS synthetic data for A&H in England](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
+For this stage we're going to be loosely following the anonymisation techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
 ### Where a patient lives
   
