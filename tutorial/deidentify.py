@@ -19,8 +19,9 @@ def main():
     print('removing NHS numbers...')
     nhs_ae_df = remove_nhs_numbers(nhs_ae_df)
 
-    print('removing NHS numbers...')
+    print('converting postcodes to LSOA...')
     nhs_ae_df = convert_postcodes_to_lsoa(nhs_ae_df)
+
     nhs_ae_df = convert_lsoa_to_imd_decile(nhs_ae_df)
     nhs_ae_df = replace_hospital_with_random_number(nhs_ae_df)
     nhs_ae_df = sample_data(nhs_ae_df, frac=0.8)
@@ -35,32 +36,54 @@ def main():
 
 
 def load_nhs_london_ae_data() -> pd.DataFrame:
+    """ Reads the NHS A&E dataset """
     nhs_ae_df = pd.read_csv(filepaths.nhs_ae_data)
     return nhs_ae_df
 
 
-def remove_nhs_numbers(nhs_ae_df):
-    nhs_df = nhs_ae_df.drop('NHS number', 1)
-    return nhs_df
+def remove_nhs_numbers(nhs_ae_df: pd.DataFrame) -> pd.DataFrame:
+    """Drops the NHS numbers columns from the dataset
+
+    Keyword arguments:
+    nhs_ae_df -- NHS A&E records dataframe
+    """
+    nhs_ae_df = nhs_ae_df.drop('NHS number', 1)
+    return nhs_ae_df
 
 
-def convert_postcodes_to_lsoa(nhs_ae_df) -> pd.DataFrame:
+def convert_postcodes_to_lsoa(nhs_ae_df: pd.DataFrame) -> pd.DataFrame:
+    """Adds corresponding Lower layer super output area for each row
+    depending on their postcode. Uses London postcodes dataset from
+    https://www.doogal.co.uk/PostcodeDownloads.php 
+
+    Keyword arguments:
+    nhs_ae_df -- NHS A&E records dataframe
+    """
     postcodes_df = pd.read_csv(filepaths.postcodes_london)
-    nhs_df = pd.merge(
-        nhs_df, 
+    nhs_ae_df = pd.merge(
+        nhs_ae_df, 
         postcodes_df[['Postcode', 'Lower layer super output area']], 
         on='Postcode'
     )
-    # remove postcode
-    nhs_df = nhs_df.drop('Postcode', 1)
-    return nhs_df
+    nhs_ae_df = nhs_ae_df.drop('Postcode', 1)
+    return nhs_ae_df
 
 
-def convert_lsoa_to_imd_decile(nhs_df) -> pd.DataFrame:
+def convert_lsoa_to_imd_decile(nhs_ae_df: pd.DataFrame) -> pd.DataFrame:
+    """Maps each row's Lower layer super output area to which 
+    Index of Multiple Deprivation decile it's in. It calculates the decile 
+    rates based on the IMD's over all of London. 
+    Uses "London postcodes.csv" dataset from
+    https://www.doogal.co.uk/PostcodeDownloads.php 
+
+    Keyword arguments:
+    nhs_ae_df -- NHS A&E records dataframe
+    """
+
     postcodes_df = pd.read_csv(filepaths.postcodes_london)
 
-    nhs_df = pd.merge(
-        nhs_df, 
+    nhs_ae_df = pd.merge(
+        nhs_ae_df, 
         postcodes_df[
             ['Lower layer super output area', 
              'Index of Multiple Deprivation']
@@ -71,26 +94,37 @@ def convert_lsoa_to_imd_decile(nhs_df) -> pd.DataFrame:
         postcodes_df['Index of Multiple Deprivation'], 10, 
         retbins=True, labels=False
     )
-    nhs_df['Index of Multiple Deprivation Decile'] = pd.cut(
-        nhs_df['Index of Multiple Deprivation'], bins=bins, 
+    nhs_ae_df['Index of Multiple Deprivation Decile'] = pd.cut(
+        nhs_ae_df['Index of Multiple Deprivation'], bins=bins, 
         labels=False, include_lowest=True) + 1
 
-    nhs_df = nhs_df.drop('Index of Multiple Deprivation', 1)
-    nhs_df = nhs_df.drop('Lower layer super output area', 1)
+    nhs_ae_df = nhs_ae_df.drop('Index of Multiple Deprivation', 1)
+    nhs_ae_df = nhs_ae_df.drop('Lower layer super output area', 1)
 
-    return nhs_df
+    return nhs_ae_df
 
 
-def replace_hospital_with_random_number(nhs_df):
-    hospitals = list(set(nhs_df['Hospital'].tolist()))
+def replace_hospital_with_random_number(
+        nhs_ae_df: pd.DataFrame) -> pd.DataFrame:
+    """ 
+    Gives each hospital a random integer number and adds a new column
+    with these numbers. Drops the hospital name column. 
+
+    Keyword arguments:
+    nhs_ae_df -- NHS A&E records dataframe
+    """
+
+    hospitals = list(set(nhs_ae_df['Hospital'].tolist()))
     random.shuffle(hospitals)
     hospital_ids = range(1, len(hospitals)+1)
     hospitals_map = {
         hospital : hospital_id
         for hospital, hospital_id in zip(hospitals, hospital_ids)
     }
-    nhs_df['Hospital'] = nhs_df['Hospital'].map(hospitals_map)
-    return nhs_df
+    nhs_ae_df['Hospital ID'] = nhs_ae_df['Hospital'].map(hospitals_map)
+    nhs_df = nhs_df.drop('Hospital', 1)
+
+    return nhs_ae_df
 
 
 def sample_data(nhs_df, frac=0.5):
