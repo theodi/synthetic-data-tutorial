@@ -1,5 +1,6 @@
 '''
-Answers for all the sections of the tutorial
+Takes the NHS A&E data generated from generate.py and runs it through a
+set of de-identification steps. It then saves this as a new dataset.
 '''
 import random 
 
@@ -10,26 +11,40 @@ import filepaths
 
 
 def main():
-    nhs_london_ae_df = load_nhs_london_ae_data()
-    nhs_london_ae_df = convert_postcodes_to_lsoa(nhs_london_ae_df)
-    nhs_london_ae_df = convert_lsoa_to_imd_decile(nhs_london_ae_df)
-    nhs_london_ae_df = replace_hospital_with_random_number(nhs_london_ae_df)
-    nhs_london_ae_df = sample_data(nhs_london_ae_df, frac=0.8)
-    nhs_london_ae_df = put_time_in_4_hour_bins(nhs_london_ae_df)
-    nhs_london_ae_df = remove_non_male_or_female(nhs_london_ae_df)
-    nhs_london_ae_df = add_age_brackets(nhs_london_ae_df)
+    print('running de-identification steps...')
 
-    nhs_london_ae_df.to_csv(filepaths.nhs_ae_anonymous, index=False)
+    # "df" is the usual way people refer to a pandas DataFrame object
+    nhs_ae_df = load_nhs_london_ae_data()
 
-    print('done.')
+    print('removing NHS numbers...')
+    nhs_ae_df = remove_nhs_numbers(nhs_ae_df)
+
+    print('removing NHS numbers...')
+    nhs_ae_df = convert_postcodes_to_lsoa(nhs_ae_df)
+    nhs_ae_df = convert_lsoa_to_imd_decile(nhs_ae_df)
+    nhs_ae_df = replace_hospital_with_random_number(nhs_ae_df)
+    nhs_ae_df = sample_data(nhs_ae_df, frac=0.8)
+    nhs_ae_df = put_time_in_4_hour_bins(nhs_ae_df)
+    nhs_ae_df = remove_non_male_or_female(nhs_ae_df)
+    nhs_ae_df = add_age_brackets(nhs_ae_df)
+
+    nhs_ae_df.to_csv(filepaths.nhs_ae_data_deidentify, index=False)
+
+    elapsed = round(time.time() - start, 2)
+    print('done in ' + str(elapsed) + ' seconds.')
 
 
-def load_nhs_london_ae_data():
-    nhs_london_ae_df = pd.read_csv(filepaths.nhs_ae_mock)
-    return nhs_london_ae_df
+def load_nhs_london_ae_data() -> pd.DataFrame:
+    nhs_ae_df = pd.read_csv(filepaths.nhs_ae_data)
+    return nhs_ae_df
 
 
-def convert_postcodes_to_lsoa(nhs_df) -> pd.DataFrame:
+def remove_nhs_numbers(nhs_ae_df):
+    nhs_df = nhs_ae_df.drop('NHS number', 1)
+    return nhs_df
+
+
+def convert_postcodes_to_lsoa(nhs_ae_df) -> pd.DataFrame:
     postcodes_df = pd.read_csv(filepaths.postcodes_london)
     nhs_df = pd.merge(
         nhs_df, 

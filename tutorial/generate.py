@@ -27,25 +27,42 @@ num_of_rows = 10000
 
 def main():
     print('generating data...')
-
     start = time.time()
 
     nhs_ae_dataset = {}
+
+    print('generating A&E admission IDs...')
     nhs_ae_dataset['Attendance ID'] = generate_admission_ids()
+
+    print('generating NHS numbers...')
     nhs_ae_dataset['NHS number'] = generate_nhs_numbers()
+
+    print('generating hospital instances...')
     nhs_ae_dataset['Hospital'] = generate_hospitals()
+
+    print('generating arrival times...')
     nhs_ae_dataset['Arrival Time'] = generate_arrival_times()
+
+    print('generating times spent in A&E...')
     nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+
+    print('generating A&E treaments...')
     nhs_ae_dataset['Treatment'] = generate_treatments()
+
+    print('generating patient gender instances...')
     nhs_ae_dataset['Gender'] = generate_genders()
+
+    print('generating patient ages...')
     nhs_ae_dataset['Age'] = generates_ages()
+
+    print('generating patient postcodes...')
     nhs_ae_dataset['Postcode'] = generate_postcodes()
 
     write_out_dataset(nhs_ae_dataset, filepaths.nhs_ae_data)
+    print('dataset written out to: ', filepaths.nhs_ae_data)
 
-    end = time.time()
-
-    print('done in ' + (end - start) + ' seconds.')
+    elapsed = round(time.time() - start, 2)
+    print('done in ' + str(elapsed) + ' seconds.')
 
 
 def generate_admission_ids() -> list:
@@ -170,15 +187,30 @@ def generate_age(age: int) -> int:
 
 
 def generate_treatments() -> list:
-    # treatment codes found here:
-    # https://www.datadictionary.nhs.uk/web_site_content/supporting_information/clinical_coding/accident_and_emergency_treatment_tables.asp?shownav=1
+    """ Generate and return sample of treatments patients received. 
+
+    Reads data/treatment_codes_nhs_ae.csv file 
+    generates ages based on those (max 100)
+    returns the list. 
+
+    NHS treatment codes:
+    https://www.datadictionary.nhs.uk/web_site_content/supporting_information/clinical_coding/accident_and_emergency_treatment_tables.asp?shownav=1
+    """
+
     treatment_codes_df = pd.read_csv(filepaths.nhs_ae_treatment_codes)
     treatments = treatment_codes_df['Treatment'].tolist()
     treatment_codes = random.choices(treatments, k=num_of_rows)
     return treatment_codes
 
 
-def write_out_dataset(dataset, filepath):
+def write_out_dataset(dataset: dict, filepath: str):
+    """Writing dataset to .csv file
+
+    Keyword arguments:
+    dataset -- the dataset to be written to disk
+    filepath -- path to write the file out to
+    """
+
     df = pd.DataFrame.from_dict(dataset)
     df.to_csv(filepath, index=False)
 
