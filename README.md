@@ -140,12 +140,12 @@ First we'll map the postcodes to their LSOA and drop the postcodes.
 
 ```python
 postcodes_df = pd.read_csv(filepaths.postcodes_london)
-nhs_df = pd.merge(
-    nhs_df,
+nhs_ae_df = pd.merge(
+    nhs_ae_df,
     postcodes_df[['Postcode', 'Lower layer super output area']],
     on='Postcode'
 )
-nhs_df = nhs_df.drop('Postcode', 1)
+nhs_ae_df = nhs_ae_df.drop('Postcode', 1)
 ```
 
 Then we'll add a mapped coliumn  of "Index of Multiple Deprivation" column for each entry's LSOA.
