@@ -30,11 +30,9 @@ We have an [R&D programme](https://theodi.org/project/data-innovation-for-uk-res
 
 Sure! Let's go.
 
----
-
 ## Overview
 
-In this tutorial you are aiming to open A&E data. However, this data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and adapting identifying information in the data we can greatly reduce the risk that patients can be re-identified. 
+In this tutorial you are aiming to open A&E data. However, this data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and adapting identifying information in the data we can greatly reduce the risk that patients can be re-identified.
 
 The practical steps involve:
 
@@ -45,15 +43,11 @@ The practical steps involve:
 
 You may be wondering, why can't we just do synthetic data step? If it's synthetic and doesn't contain any personal information? Not exactly. Patterns picked up in the original data and transferred to the . This is especially true for outliers - for instance if  
 
----
-
 ## Credit to others
 
 This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data. Just to be clear, we're not using their exact data, but create our own simple mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data!
 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. It's an excellent piece of software and their research is well worth checking out.  
-
----
 
 ## Definitions
 
@@ -63,8 +57,6 @@ I'll use a number of technical words repeatedly in this tutorial. So it's best i
 - **De-identification:** ...
 - **Re-identification:** ...
 - ...
-
----
 
 ## Setup
 
@@ -81,8 +73,6 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-
----
 
 ## Generate mock NHS A&E dataset
 
@@ -116,19 +106,29 @@ Voila! You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory.
 
 We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's NHS numbers were to be leaked in future, lots of people could be re-identified.
 
-Because of this, we'll need to take some anonymisation steps.
+Because of this, we'll need to take some de-identification steps.
 
----
-
-## Anonymisation Steps
+## De-identification
 
 For this stage we're going to be loosely following the anonymisation techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
-We pass the data through the following de-identification process.
+We pass the data through the following de-identification process. If you look in `tutorial/deidentify.py` you'll see the steps involved in this.
 
-1. **Remove NHS numbers:** NHS numbers are direct identifiers and should be removed.
+It first loads the `data/nhs_ae_data.csv` file in to the Pandas DataFrame as `nhs_ae_df`.
 
-2. **Where a patient lives:** Postcodes, due to the number of people with them, are 
+```python
+nhs_london_ae_df = pd.read_csv(filepaths.nhs_ae_data)
+```
+
+### Remove NHS numbers
+
+NHS numbers are direct identifiers and should be removed.
+
+### Where a patient lives
+
+Pseudo-indentifiers, also known as [quasi-identifiers](https://en.wikipedia.org/wiki/Quasi-identifier), are pieces of information that don't directly identify people but can used with other information to identify a person. If someone were to take the age, postcode and gender of a person they could combine and check the dataset to see what that person went to A&E with.
+
+
   
 ### Individual hospitals
 
@@ -137,8 +137,6 @@ We pass the data through the following de-identification process.
 ### Patient demographics
 
 ### Health care coding
-
----
 
 ## Synthesising
 
