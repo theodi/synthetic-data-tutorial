@@ -16,12 +16,12 @@ def main():
     threshold_value = len(nhs_ae_df['Treatment'].unique().tolist())
     num_tuples_to_generate = len(nhs_ae_df)
     attribute_to_datatype = {
-        'Attendance ID': 'String', 'Hospital': 'String', 'Time in A&E (mins)': 'Integer', 'Treatment': 'String', 
+        'Attendance ID': 'String', 'Hospital ID': 'String', 'Time in A&E (mins)': 'Integer', 'Treatment': 'String', 
         'Gender': 'String', 'Index of Multiple Deprivation Decile': 'Integer',
         'Arrival Date': 'String', 'Arrival hour range': 'String',  'Age bracket': 'String'
     }
     attribute_to_is_categorical = {
-        'Attendance ID': False, 'Hospital': True, 'Time in A&E (mins)': False, 
+        'Attendance ID': False, 'Hospital ID': True, 'Time in A&E (mins)': False, 
         'Treatment': True, 
         'Gender': True, 'Index of Multiple Deprivation Decile': False,
         'Arrival Date': True, 'Arrival hour range': True,  'Age bracket': True
