@@ -24,7 +24,6 @@ def main():
 
     nhs_ae_df = convert_lsoa_to_imd_decile(nhs_ae_df)
     nhs_ae_df = replace_hospital_with_random_number(nhs_ae_df)
-    nhs_ae_df = sample_data(nhs_ae_df, frac=0.8)
     nhs_ae_df = put_time_in_4_hour_bins(nhs_ae_df)
     nhs_ae_df = remove_non_male_or_female(nhs_ae_df)
     nhs_ae_df = add_age_brackets(nhs_ae_df)
@@ -122,28 +121,24 @@ def replace_hospital_with_random_number(
         for hospital, hospital_id in zip(hospitals, hospital_ids)
     }
     nhs_ae_df['Hospital ID'] = nhs_ae_df['Hospital'].map(hospitals_map)
-    nhs_df = nhs_df.drop('Hospital', 1)
+    nhs_ae_df = nhs_ae_df.drop('Hospital', 1)
 
     return nhs_ae_df
 
 
-def sample_data(nhs_df, frac=0.5):
-    return nhs_df.sample(frac=frac)
-    
+def put_time_in_4_hour_bins(nhs_ae_df):
+    arrival_times = pd.to_datetime(nhs_ae_df['Arrival Time'])
+    nhs_ae_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
+    nhs_ae_df['Arrival Hour'] = arrival_times.dt.hour
 
-def put_time_in_4_hour_bins(nhs_df):
-    arrival_times = pd.to_datetime(nhs_df['Arrival Time'])
-    nhs_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
-    nhs_df['Arrival Hour'] = arrival_times.dt.hour
-
-    nhs_df['Arrival hour range'] = pd.cut(
-        nhs_df['Arrival Hour'], 
+    nhs_ae_df['Arrival hour range'] = pd.cut(
+        nhs_ae_df['Arrival Hour'], 
         bins=[0, 4, 8, 12, 16, 20, 24], 
         labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'], 
         include_lowest=True
     )
-    nhs_df = nhs_df.drop('Arrival Time', 1)
-    nhs_df = nhs_df.drop('Arrival Hour', 1)
+    nhs_ae_df = nhs_ae_df.drop('Arrival Time', 1)
+    nhs_ae_df = nhs_ae_df.drop('Arrival Hour', 1)
     return nhs_df
 
 
