@@ -8,7 +8,7 @@ A hands-on tutorial to show how to create synthetic data using some Python libra
 
 **Wait, what is this "synthetic data" you speak of?**
 
-It's data's that is created by an automated process which contains many of the statistical patterns of an original dataset. If you do this well enough, you can release the synthetic data knowing that you've kept a lot of the useful information in the dataset while removing most, if not all, of the personal information.
+It's data that is created by an automated process which contains many of the statistical patterns of an original dataset. If you do this well enough, you can release the synthetic data knowing that you've kept a lot of the useful information in the dataset while removing most, if not all, of the personal information.
 
 **Who is this tutorial for?**
 
@@ -67,7 +67,7 @@ Download this repository either as a zip or using Git.
 Change direcory in to the repo, install a virtualenv and install the dependent libaries.
 
 ```bash
-cd /path/to/repo/synthetic_data_workshop/
+cd /path/to/repo/synthetic_data_tutorial/
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
@@ -80,10 +80,10 @@ You can use the `data/nhs_ae_mock.csv` as it is but preferably you should genera
 
 If you do want to generate your own unique data, you'll need to download one dataset first. It's a list of all postcodes in London. You can find it at this page on [doogal.co.uk](https://www.doogal.co.uk/PostcodeDownloads.php), at the _London_ link under the _By English region_ section. Or just download it directly at [this link](https://www.doogal.co.uk/UKPostcodesCSV.ashx?region=E12000007) (just take note, it's 133MB in size).
 
-Then place the `London postcodes.csv` file in to the `synthetic_data_workshop/data` directory.
+Then place the `London postcodes.csv` file in to the `synthetic-data-tutorial/data` directory.
 
 ```bash
-mv "/path/to/dataset/London postcodes" /path/to/repo/synthetic-data-workshop/data
+mv "/path/to/dataset/London postcodes" /path/to/repo/synthetic-data-tutorial/data
 ```
 
 Next simply go to the project root directory and run the `generate.py` script.
