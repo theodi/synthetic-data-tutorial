@@ -1,5 +1,5 @@
 """
-Script that generates data to use in the synthetic data tutorial.
+Script that generates hospital A&E data to use in the synthetic data tutorial.
 
 Columns of data inpired by NHS+ODI Leeds blog post:
 https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data
@@ -29,37 +29,37 @@ def main():
     print('generating data...')
     start = time.time()
 
-    nhs_ae_dataset = {}
+    hospital_ae_dataset = {}
 
     print('generating A&E admission IDs...')
-    nhs_ae_dataset['Attendance ID'] = generate_admission_ids()
+    hospital_ae_dataset['Attendance ID'] = generate_admission_ids()
 
-    print('generating NHS numbers...')
-    nhs_ae_dataset['NHS number'] = generate_nhs_numbers()
+    print('generating Health Service ID numbers...')
+    hospital_ae_dataset['Health Service ID'] = generate_health_service_id_numbers()
 
     print('generating hospital instances...')
-    nhs_ae_dataset['Hospital'] = generate_hospitals()
+    hospital_ae_dataset['Hospital'] = generate_hospitals()
 
     print('generating arrival times...')
-    nhs_ae_dataset['Arrival Time'] = generate_arrival_times()
+    hospital_ae_dataset['Arrival Time'] = generate_arrival_times()
 
     print('generating times spent in A&E...')
-    nhs_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+    hospital_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
 
     print('generating A&E treaments...')
-    nhs_ae_dataset['Treatment'] = generate_treatments()
+    hospital_ae_dataset['Treatment'] = generate_treatments()
 
     print('generating patient gender instances...')
-    nhs_ae_dataset['Gender'] = generate_genders()
+    hospital_ae_dataset['Gender'] = generate_genders()
 
     print('generating patient ages...')
-    nhs_ae_dataset['Age'] = generates_ages()
+    hospital_ae_dataset['Age'] = generates_ages()
 
     print('generating patient postcodes...')
-    nhs_ae_dataset['Postcode'] = generate_postcodes()
+    hospital_ae_dataset['Postcode'] = generate_postcodes()
 
-    write_out_dataset(nhs_ae_dataset, filepaths.nhs_ae_data)
-    print('dataset written out to: ', filepaths.nhs_ae_data)
+    write_out_dataset(hospital_ae_dataset, filepaths.hospital_ae_data)
+    print('dataset written out to: ', filepaths.hospital_ae_data)
 
     elapsed = round(time.time() - start, 2)
     print('done in ' + str(elapsed) + ' seconds.')
@@ -74,17 +74,17 @@ def generate_admission_ids() -> list:
         uids.append(x)
     return uids
 
-def generate_nhs_numbers() -> list:
-    """ Generate dummy NHS numbers similar to 10 digit format
+def generate_health_service_id_numbers() -> list:
+    """ Generate dummy Health Service ID numbers similar to NHS 10 digit format
     See: https://www.nhs.uk/using-the-nhs/about-the-nhs/what-is-an-nhs-number/
     """
-    nhs_numbers = []
+    health_service_id_numbers = []
     for _ in range(num_of_rows): 
-        nhs_number = ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
-        nhs_number = ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
-        nhs_number = ''.join(random.choice(string.digits) for _ in range(4))
-        nhs_numbers.append(nhs_number)
-    return nhs_numbers
+        health_service_id = ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
+        health_service_id += ''.join(random.choice(string.digits) for _ in range(3)) + '-'   
+        health_service_id += ''.join(random.choice(string.digits) for _ in range(4))
+        health_service_id_numbers.append(health_service_id)
+    return health_service_id_numbers
 
 
 def generate_postcodes() -> list:
@@ -103,10 +103,10 @@ def generate_hospitals() -> list:
     """ Reads the data/hospitals_london.txt file, and generates a
     sample of them to add to the dataset.
 
-    List of London NHS hospitals loosely based on 
+    List of London hospitals loosely based on 
     https://en.wikipedia.org/wiki/Category:NHS_hospitals_in_London
     """
-    with open(filepaths.nhs_hospitals_london, 'r') as file_in:
+    with open(filepaths.hospitals_london, 'r') as file_in:
         hospitals = file_in.readlines()
     hospitals = [name.strip() for name in hospitals]
     hospitals = random.choices(hospitals, k=num_of_rows)
@@ -181,6 +181,7 @@ def generates_ages() -> list:
 
 def generate_age(age: int) -> int:
     if age == 90: 
+        # max age of 100, not exactly accurate but good enough for example purposes
         return random.randint(90, 100) 
     else:
         return random.randint(age, age+4)
@@ -190,8 +191,6 @@ def generate_treatments() -> list:
     """ Generate and return sample of treatments patients received. 
 
     Reads data/treatment_codes_nhs_ae.csv file 
-    generates ages based on those (max 100)
-    returns the list. 
 
     NHS treatment codes:
     https://www.datadictionary.nhs.uk/web_site_content/supporting_information/clinical_coding/accident_and_emergency_treatment_tables.asp?shownav=1
