@@ -209,26 +209,47 @@ So let's do just that.
 > The next obvious step was to simplify some of the time information I have available as health care system analysis doesn't need to be responsive enough to work on a second and minute basis. Thus, I removed the time information from the 'arrival date', mapped the 'arrival time' into 4-hour chunks
 
 ```python
-    arrival_times = pd.to_datetime(nhs_ae_df['Arrival Time'])
-    nhs_ae_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
-    nhs_ae_df['Arrival Hour'] = arrival_times.dt.hour
+arrival_times = pd.to_datetime(nhs_ae_df['Arrival Time'])
+nhs_ae_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
+nhs_ae_df['Arrival Hour'] = arrival_times.dt.hour
 
-    nhs_ae_df['Arrival hour range'] = pd.cut(
-        nhs_ae_df['Arrival Hour'], 
-        bins=[0, 4, 8, 12, 16, 20, 24], 
-        labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'], 
-        include_lowest=True
-    )
-    nhs_ae_df = nhs_ae_df.drop('Arrival Time', 1)
-    nhs_ae_df = nhs_ae_df.drop('Arrival Hour', 1)
+nhs_ae_df['Arrival hour range'] = pd.cut(
+    nhs_ae_df['Arrival Hour'], 
+    bins=[0, 4, 8, 12, 16, 20, 24], 
+    labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'], 
+    include_lowest=True
+)
+nhs_ae_df = nhs_ae_df.drop('Arrival Time', 1)
+nhs_ae_df = nhs_ae_df.drop('Arrival Hour', 1)
 ```
 
 ### Patient demographics
+
+> I decided to only include records with a sex of male or female in order to reduce risk of re identification through low numbers. 
+
+```python
+hospital_ae_df = hospital_ae_df[hospital_ae_df['Gender'].isin(['Male', 'Female'])]
+```
+
+> For the patients age it is common practice to group these into bands and so I've used a standard set - 1-17, 18-24, 25-44, 45-64, 65-84, and 85+ - which although are non-uniform are well used segments defining different average health care usage.
+
+```python
+hospital_ae_df['Age bracket'] = pd.cut(
+    hospital_ae_df['Age'],
+    bins=[0, 18, 25, 45, 65, 85, 150],
+    labels=['0-17', '18-24', '25-44', '45-64', '65-84', '85-'],
+    include_lowest=True
+)
+hospital_ae_df = hospital_ae_df.drop('Age', 1)
+```
 
 ### Health care coding
 
 ## Synthesising
 
+Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
+
+Synthetic data exists on a spectrum from merely the same structure as the original data to 
 For each of three we'll run our tests we defined and observe the results. These are three modes available in Data Synthesizer toolkit.
 
 ### Identify variables with correlation
