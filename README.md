@@ -249,16 +249,23 @@ hospital_ae_df = hospital_ae_df.drop('Age', 1)
 
 Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
 
-Synthetic data exists on a spectrum from merely the same structure as the original data to 
+Synthetic data exists on a spectrum from merely the same structure as the original data to carrying most of the statistical patterns of the original dataset. The columns all contain data similar in type to the original but vary in how similar they are to the origianl. 
+
+We'll make three types of synthetic data.
+
+1. Random – the values are generated randomly and bare no relation to the statistical patterns in the original data.
+2. Independent – The values are similar to the original data but contain no correlation info.  
+3. Correlated – Correlation info is kept in
+
+
+### DataSynthesizer
+
+> DataSynthesizer consists of three high-level modules — DataDe- scriber, DataGenerator and ModelInspector. The first, DataDescriber, investigates the data types, correlations and distributions of the at- tributes in the private dataset, and produces a data summary, adding noise to the distributions to preserve privacy. DataGenerator sam- ples from the summary computed by DataDescriber and outputs synthetic data. ModelInspector shows an intuitive description of the data summary that was computed by DataDescriber, allowing the data owner to evaluate the accuracy of.
+
 For each of three we'll run our tests we defined and observe the results. These are three modes available in Data Synthesizer toolkit.
 
-### Identify variables with correlation
-
-> In the end I have used a stepwise Pearson's correlation to identify the variables with the least relationship to any other variable in the extract.
-
-Explain Bayesian Networks.
-
 ### Random mode - generate random values for this column
+
 
 ### Independent attribute mode - keep the patterns of each individual column
 

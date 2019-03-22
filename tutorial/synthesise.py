@@ -45,38 +45,38 @@ def main():
         num_tuples_to_generate, filepaths.nhs_ae_description_random)
     generator.save_synthetic_data(filepaths.nhs_ae_synthetic_random)
 
-    # independent mode 
-    describer.describe_dataset_in_independent_attribute_mode(
-        filepaths.nhs_ae_anonymous,
-        attribute_to_datatype=attribute_to_datatype,
-        attribute_to_is_categorical=attribute_to_is_categorical)
-    describer.save_dataset_description_to_file(filepaths.nhs_ae_description_independent)
+    # # independent mode 
+    # describer.describe_dataset_in_independent_attribute_mode(
+    #     filepaths.nhs_ae_anonymous,
+    #     attribute_to_datatype=attribute_to_datatype,
+    #     attribute_to_is_categorical=attribute_to_is_categorical)
+    # describer.save_dataset_description_to_file(filepaths.nhs_ae_description_independent)
 
-    generator.generate_dataset_in_random_mode(
-        num_tuples_to_generate, filepaths.nhs_ae_description_independent)
-    generator.save_synthetic_data(filepaths.nhs_ae_synthetic_independent)
+    # generator.generate_dataset_in_random_mode(
+    #     num_tuples_to_generate, filepaths.nhs_ae_description_independent)
+    # generator.save_synthetic_data(filepaths.nhs_ae_synthetic_independent)
 
-    # correlated mode
-    # A parameter in Differential Privacy. It roughly means that changing a row in the input dataset will not 
-    # change the probability of getting the same output more than a multiplicative difference of exp(epsilon).
-    # Increase epsilon value to reduce the injected noises. Set epsilon=0 to turn off differential privacy.
-    epsilon = 0.1
+    # # correlated mode
+    # # A parameter in Differential Privacy. It roughly means that changing a row in the input dataset will not 
+    # # change the probability of getting the same output more than a multiplicative difference of exp(epsilon).
+    # # Increase epsilon value to reduce the injected noises. Set epsilon=0 to turn off differential privacy.
+    # epsilon = 0.1
 
-    # The maximum number of parents in Bayesian network, i.e., the maximum number of incoming edges.
-    degree_of_bayesian_network = 2
+    # # The maximum number of parents in Bayesian network, i.e., the maximum number of incoming edges.
+    # degree_of_bayesian_network = 2
 
-    describer.describe_dataset_in_correlated_attribute_mode(
-        dataset_file=filepaths.nhs_ae_anonymous, 
-        epsilon=epsilon, 
-        k=degree_of_bayesian_network,
-        attribute_to_datatype=attribute_to_datatype,
-        attribute_to_is_categorical=attribute_to_is_categorical,
-        attribute_to_is_candidate_key=attribute_to_is_candidate_key)
-    describer.save_dataset_description_to_file(
-        filepaths.nhs_ae_description_correlated)
-    generator.generate_dataset_in_correlated_attribute_mode(
-        num_tuples_to_generate, filepaths.nhs_ae_description_correlated)
-    generator.save_synthetic_data(filepaths.nhs_ae_synthetic_correlated)
+    # describer.describe_dataset_in_correlated_attribute_mode(
+    #     dataset_file=filepaths.nhs_ae_anonymous, 
+    #     epsilon=epsilon, 
+    #     k=degree_of_bayesian_network,
+    #     attribute_to_datatype=attribute_to_datatype,
+    #     attribute_to_is_categorical=attribute_to_is_categorical,
+    #     attribute_to_is_candidate_key=attribute_to_is_candidate_key)
+    # describer.save_dataset_description_to_file(
+    #     filepaths.nhs_ae_description_correlated)
+    # generator.generate_dataset_in_correlated_attribute_mode(
+    #     num_tuples_to_generate, filepaths.nhs_ae_description_correlated)
+    # generator.save_synthetic_data(filepaths.nhs_ae_synthetic_correlated)
 
     print('done.')
 
