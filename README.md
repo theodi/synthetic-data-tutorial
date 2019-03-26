@@ -1,4 +1,4 @@
-# Synthetic Data for Reducing Risk of Re-identification in Open Data Tutorial
+# Anonymisation with Synthetic Data Tutorial
 
 ## Some questions
 
@@ -32,20 +32,22 @@ Sure! Let's go.
 
 ## Overview
 
-In this tutorial you are aiming to open A&E data. However, this data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and adapting identifying information in the data we can greatly reduce the risk that patients can be re-identified.
+In this tutorial you are aiming to open A&E data from multiple hospitals. However, this data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and altering certain identifying information in the data we can greatly reduce the risk that patients can be re-identified.
 
 The practical steps involve:
 
-1. Create an A&E admissions dataset which will contain personal information.
+1. Create an A&E admissions dataset which will contain (pretend) personal information.
 2. Run some anonymisation steps over this dataset to generate a new dataset with much less re-identification risk.
-3. Take this pseudoanonymous dataset and generate multiple synthetic datasets from it which reduces the re-identification risk even further.
+3. Take this pseudo-anonymous dataset and generate multiple synthetic datasets from it to reduce the re-identification risk even further.
 4. Analyse the synthetic datasets to see how similar they are to the original data and if they're still useful.
 
-You may be wondering, why can't we just do synthetic data step? If it's synthetic and doesn't contain any personal information? Not exactly. Patterns picked up in the original data and transferred to the . This is especially true for outliers - for instance if  
+You may be wondering, why can't we just do synthetic data step? If it's synthetic and doesn't contain any personal information?
+
+Not exactly. Patterns picked up in the original data can be transferred to the synthetic data. This is especially true for outliers. For instance if there is only one person from an certain area over 85 and this shows up in the synthetic data, we would ben able to re-identify them.
 
 ## Credit to others
 
-This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from their hospitals accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data. Just to be clear, we're not using their exact data, but create our own simple mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data!
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the trade-offs in creating synthetic data. Just to be clear, we're not using their data but are creating our own simple, mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data!
 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. It's an excellent piece of software and their research is well worth checking out.  
 
@@ -92,10 +94,10 @@ Next simply go to the project root directory and run the `generate.py` script.
 python tutorial/generate.py
 ```
 
-Voila! You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
+Voila! You'll now see a `hospital_ae_data.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
 
 - **Attendance ID**: a unique ID generated for every admission to A&E
-- **NHS number**: NHS number of the admitted patient  
+- **Health Service ID**: NHS number of the admitted patient  
 - **Hospital**: which hospital admitted the patient
 - **Arrival Time**: what time and date the patient was admitted
 - **Time in A&E (mins)**: time (in minutes) of how long the patient spent in A&E
@@ -104,13 +106,13 @@ Voila! You'll now see a `mock_nhs_ae_dataset.csv` file in the `/data` directory.
 - **Age**: age of patient
 - **Postcode**: postcode of patient
 
-We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's NHS numbers were to be leaked in future, lots of people could be re-identified.
+We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's Health Service ID's were to be leaked in future, lots of people could be re-identified.
 
 Because of this, we'll need to take some de-identification steps.
 
 ## De-identification
 
-For this stage we're going to be loosely following the anonymisation techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
+For this stage we're going to be loosely following the de-identification techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
 We pass the data through the following de-identification process. If you look in `tutorial/deidentify.py` you'll see the steps involved in this.
 
