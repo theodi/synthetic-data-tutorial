@@ -21,14 +21,14 @@
             "Attendance ID"
         ],
         "attributes_in_BN": [
-            "Gender",
-            "Arrival hour range",
-            "Treatment",
-            "Age bracket",
             "Index of Multiple Deprivation Decile",
-            "Hospital ID",
             "Time in A&E (mins)",
-            "Arrival Date"
+            "Arrival Date",
+            "Hospital ID",
+            "Arrival hour range",
+            "Gender",
+            "Age bracket",
+            "Treatment"
         ]
     },
     "attribute_description": {

@@ -272,18 +272,108 @@ For each of three we'll run our tests we defined and observe the results. These 
 
 If we were just to generate data for testing our software. We wouldn't care too much about the statistical patterns within the data. Just that it was roughly a similar size and that the datatypes and columns aligned.
 
+In this case, we can just generate the data at random using the `generate_dataset_in_random_mode` function within the `DataGenerator` class.
 
+The first step is to create a description of the data, defining the datatypes and which are the categorical variables.
+
+```python
+attribute_to_datatype = {
+    'Attendance ID': 'String',
+    'Time in A&E (mins)': 'Integer',
+    'Treatment': 'String',
+    'Gender': 'String',
+    'Index of Multiple Deprivation Decile': 'Integer',
+    'Hospital ID': 'String',
+    'Arrival Date': 'String',
+    'Arrival hour range': 'String',  
+    'Age bracket': 'String'
+}
+
+attribute_is_categorical = {
+    'Attendance ID': False,
+    'Hospital ID': True,
+    'Time in A&E (mins)': False,
+    'Treatment': True,
+    'Gender': True,
+    'Index of Multiple Deprivation Decile': False,
+    'Arrival Date': True,
+    'Arrival hour range': True,  
+    'Age bracket': True
+}
+```
+
+Then create a description file, specificying where the data is and its attritube types.
+
+```python
+describer.describe_dataset_in_random_mode(
+    filepaths.hospital_ae_data_deidentify,
+    attribute_to_datatype=attribute_to_datatype,
+    attribute_to_is_categorical=attribute_is_categorical)
+```
+
+You can see an example description file in `data/hospital_ae_description_random.json`.
+
+Then finally generate the random data. We'll just generatew the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
+
+```python
+num_rows = len(hospital_ae_df)
+```
+
+Now generate the random data
+
+```python
+generator.generate_dataset_in_random_mode(
+    num_rows, filepaths.hospital_ae_description_random)
+generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_random)
+```
 
 ### Independent attribute mode - keep the patterns of each individual column
 
+What if we had the use case where we wanted to build models to analyse the medians of ages, or hospital usage? In this case we'd use independent attribute mode.
+
+We'll describe and generate the independent data now.
+
+```python
+describer.describe_dataset_in_independent_attribute_mode(
+    filepaths.hospital_ae_data_deidentify,
+    attribute_to_datatype=attribute_to_datatype,
+    attribute_to_is_categorical=attribute_is_categorical)
+
+describer.save_dataset_description_to_file(description_filepath)
+
+generator.generate_dataset_in_independent_mode(num_rows, description_filepath)
+generator.save_synthetic_data(synthetic_data_filepath)
+```
+
 ### Correlated attribute mode - include correlations between columns in the data
+
+Lastly, if we care about, say, the number of old people attending a certain hospital and the waiting times dependent on hospitals. We'll need correlated data. To do this we use correlated mode.
+
+To understand how it works we need to understand Bayesian networks. These are graphs that show the dependency between different variables. You can read a very good tutorial on them at the [Probabilistic World site](https://www.probabilisticworld.com/bayesian-belief-networks-part-1/).
+
+```python
+describer.describe_dataset_in_correlated_attribute_mode(
+    dataset_file=filepaths.hospital_ae_data_deidentify,
+    epsilon=epsilon,
+    k=degree_of_bayesian_network,
+    attribute_to_datatype=attribute_to_datatype,
+    attribute_to_is_categorical=attribute_is_categorical,
+    attribute_to_is_candidate_key=attribute_to_is_candidate_key)
+
+describer.save_dataset_description_to_file(description_filepath)
+
+generator.generate_dataset_in_correlated_attribute_mode(
+    num_rows, description_filepath)
+generator.save_synthetic_data(synthetic_data_filepath)
+```
 
 ---
 
-### Post-publication
+### Wrap-up
 
-- How are you going to monitor it
-- Shoehorn in a bunch of UKAN steps 10 to 12 type questions
+That's about it really. There is much, much more to the world of anonymisation and synthetic data. Please check out more in the references below.
+
+If you have any queries, comments or improvements about this tutorial please do get in touch. You can send me a message through Github or leave an Issue.
 
 ### References
 
