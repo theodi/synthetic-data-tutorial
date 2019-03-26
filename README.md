@@ -260,11 +260,18 @@ We'll make three types of synthetic data.
 
 ### DataSynthesizer
 
-> DataSynthesizer consists of three high-level modules — DataDe- scriber, DataGenerator and ModelInspector. The first, DataDescriber, investigates the data types, correlations and distributions of the at- tributes in the private dataset, and produces a data summary, adding noise to the distributions to preserve privacy. DataGenerator sam- ples from the summary computed by DataDescriber and outputs synthetic data. ModelInspector shows an intuitive description of the data summary that was computed by DataDescriber, allowing the data owner to evaluate the accuracy of.
+> DataSynthesizer consists of three high-level modules:
+>
+> 1. DataDescriber: investigates the data types, correlations and distributions of the attributes in the private dataset, and produces a data summary.
+> 2. DataGenerator: samples from the summary computed by DataDescriber and outputs synthetic data
+> 3. ModelInspector: shows an intuitive description of the data summary that was computed by DataDescriber, allowing the data owner to evaluate the accuracy of.
 
 For each of three we'll run our tests we defined and observe the results. These are three modes available in Data Synthesizer toolkit.
 
 ### Random mode - generate random values for this column
+
+If we were just to generate data for testing our software. We wouldn't care too much about the statistical patterns within the data. Just that it was roughly a similar size and that the datatypes and columns aligned.
+
 
 
 ### Independent attribute mode - keep the patterns of each individual column

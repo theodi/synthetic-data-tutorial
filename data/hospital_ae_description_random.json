@@ -1,0 +1,335 @@
+{
+    "meta": {
+        "num_tuples": 9881,
+        "num_attributes": 9,
+        "num_attributes_in_BN": 8,
+        "all_attributes": [
+            "Attendance ID",
+            "Time in A&E (mins)",
+            "Treatment",
+            "Gender",
+            "Index of Multiple Deprivation Decile",
+            "Hospital ID",
+            "Arrival Date",
+            "Arrival hour range",
+            "Age bracket"
+        ],
+        "candidate_keys": [
+            "Attendance ID"
+        ],
+        "non_categorical_string_attributes": [
+            "Attendance ID"
+        ],
+        "attributes_in_BN": [
+            "Gender",
+            "Arrival hour range",
+            "Treatment",
+            "Age bracket",
+            "Index of Multiple Deprivation Decile",
+            "Hospital ID",
+            "Time in A&E (mins)",
+            "Arrival Date"
+        ]
+    },
+    "attribute_description": {
+        "Attendance ID": {
+            "name": "Attendance ID",
+            "data_type": "String",
+            "is_categorical": false,
+            "is_candidate_key": true,
+            "min": 7,
+            "max": 10,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                7,
+                10
+            ],
+            "distribution_probabilities": [
+                0,
+                0
+            ]
+        },
+        "Time in A&E (mins)": {
+            "name": "Time in A&E (mins)",
+            "data_type": "Integer",
+            "is_categorical": false,
+            "is_candidate_key": false,
+            "min": 1,
+            "max": 461,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                1.0,
+                461.0
+            ],
+            "distribution_probabilities": [
+                0.5,
+                0.5
+            ]
+        },
+        "Treatment": {
+            "name": "Treatment",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 3,
+            "max": 44,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                "Sling/collar cuff/broad arm sling",
+                "Joint aspiration",
+                "Anaesthesia",
+                "Minor surgery",
+                "Lumbar puncture",
+                "Infusion fluids",
+                "Tetanus",
+                "Dental treatment",
+                "None (consider guidance/advice option)",
+                "Physiotherapy",
+                "Nasal airway",
+                "Wound cleaning",
+                "Removal foreign body",
+                "Incision & drainage",
+                "Wound closure (excluding sutures)",
+                "Nebuliser/spacer",
+                "Social work intervention",
+                "Bandage/support",
+                "Defibrillation/pacing",
+                "Central line",
+                "Arterial line",
+                "Recording vital signs",
+                "Urinary catheter/suprapubic",
+                "Blood product transfusion",
+                "Eye",
+                "Other (consider alternatives)",
+                "Guidance/advice only",
+                "Occupational Therapy",
+                "Dressing",
+                "Chest drain",
+                "Sutures",
+                "Fracture review",
+                "Splint",
+                "Burns review",
+                "Oral airway",
+                "Plaster of Paris",
+                "Dressing/wound review",
+                "Resuscitation/cardiopulmonary resuscitation",
+                "Prescription/medicines prepared to take away"
+            ],
+            "distribution_probabilities": [
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564,
+                0.02564102564102564
+            ]
+        },
+        "Gender": {
+            "name": "Gender",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 4,
+            "max": 6,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                "Female",
+                "Male"
+            ],
+            "distribution_probabilities": [
+                0.5,
+                0.5
+            ]
+        },
+        "Index of Multiple Deprivation Decile": {
+            "name": "Index of Multiple Deprivation Decile",
+            "data_type": "Integer",
+            "is_categorical": false,
+            "is_candidate_key": false,
+            "min": 1,
+            "max": 10,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                1.0,
+                10.0
+            ],
+            "distribution_probabilities": [
+                0.5,
+                0.5
+            ]
+        },
+        "Hospital ID": {
+            "name": "Hospital ID",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 1,
+            "max": 2,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                3,
+                19,
+                17,
+                5,
+                10,
+                20,
+                2,
+                21,
+                23,
+                6,
+                18,
+                1,
+                14,
+                4,
+                22,
+                26,
+                8,
+                13,
+                9,
+                11,
+                25,
+                15,
+                7,
+                16,
+                24,
+                12
+            ],
+            "distribution_probabilities": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "Arrival Date": {
+            "name": "Arrival Date",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 10,
+            "max": 10,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                "2019-04-05",
+                "2019-04-06",
+                "2019-04-02",
+                "2019-04-03",
+                "2019-04-04",
+                "2019-04-01"
+            ],
+            "distribution_probabilities": [
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666
+            ]
+        },
+        "Arrival hour range": {
+            "name": "Arrival hour range",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 5,
+            "max": 5,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                "08-11",
+                "20-23",
+                "00-03",
+                "16-19",
+                "12-15",
+                "04-07"
+            ],
+            "distribution_probabilities": [
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666
+            ]
+        },
+        "Age bracket": {
+            "name": "Age bracket",
+            "data_type": "String",
+            "is_categorical": true,
+            "is_candidate_key": false,
+            "min": 3,
+            "max": 5,
+            "missing_rate": 0.0,
+            "distribution_bins": [
+                "0-17",
+                "25-44",
+                "18-24",
+                "65-84",
+                "45-64",
+                "85-"
+            ],
+            "distribution_probabilities": [
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666,
+                0.16666666666666666
+            ]
+        }
+    }
+}
