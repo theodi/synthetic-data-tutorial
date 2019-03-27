@@ -109,7 +109,11 @@ def generate_hospitals() -> list:
     with open(filepaths.hospitals_london, 'r') as file_in:
         hospitals = file_in.readlines()
     hospitals = [name.strip() for name in hospitals]
-    hospitals = random.choices(hospitals, k=num_of_rows)
+
+    # likelihood each of these hospitals will get chosen
+    weights = random.choices(range(1, 100), k=len(hospitals))
+    hospitals = random.choices(hospitals, k=num_of_rows, weights=weights)
+
     return hospitals
 
 
@@ -198,7 +202,11 @@ def generate_treatments() -> list:
 
     treatment_codes_df = pd.read_csv(filepaths.nhs_ae_treatment_codes)
     treatments = treatment_codes_df['Treatment'].tolist()
-    treatment_codes = random.choices(treatments, k=num_of_rows)
+
+    # likelihood each of the treatments - make some more common ones
+    weights = random.choices(range(1, 100), k=len(treatments))
+    treatment_codes = random.choices(
+        treatments, k=num_of_rows, weights=weights)
     return treatment_codes
 
 

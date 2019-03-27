@@ -5,6 +5,7 @@ different files.
 '''
 
 import random 
+import os
 
 import pandas as pd
 import numpy as np
@@ -12,6 +13,8 @@ import numpy as np
 import filepaths
 from DataDescriber import DataDescriber
 from DataGenerator import DataGenerator
+from ModelInspector import ModelInspector
+from lib.utils import read_json_file
 
 
 attribute_to_datatype = {
@@ -28,11 +31,11 @@ attribute_to_datatype = {
 
 attribute_is_categorical = {
     'Attendance ID': False, 
-    'Hospital ID': True, 
     'Time in A&E (mins)': False, 
     'Treatment': True, 
     'Gender': True, 
     'Index of Multiple Deprivation Decile': False,
+    'Hospital ID': True, 
     'Arrival Date': True, 
     'Arrival hour range': True,  
     'Age bracket': True
@@ -45,7 +48,7 @@ attribute_to_is_candidate_key = {
 
 def main():
     # "_df" is the usual way people refer to a Pandas DataFrame object
-    hospital_ae_df = pd.read_csv(filepaths.hospital_ae_data)
+    hospital_ae_df = pd.read_csv(filepaths.hospital_ae_data_deidentify)
     category_threshold = hospital_ae_df['Treatment'].nunique()
 
     # let's generate the same amount of rows (though we don't have to)
@@ -57,6 +60,8 @@ def main():
         description_filepath = describe_synthetic_data(
             mode, category_threshold)
         generate_synthetic_data(mode, num_rows, description_filepath)
+        compare_synthetic_data(mode, hospital_ae_df, description_filepath)
+
 
     print('done.')
 
@@ -143,6 +148,32 @@ def generate_synthetic_data(
 
  
     print('done.')
+
+
+def compare_synthetic_data(mode, hospital_ae_df, description_filepath):
+    if mode == 'random':
+        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_random
+    elif mode == 'independent':
+        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_independent
+    elif mode == 'correlated':
+        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_correlated
+
+    synthetic_df = pd.read_csv(synthetic_df_filepath)
+
+    # Read attribute description from the dataset description file.
+    attribute_description = read_json_file(
+        description_filepath)['attribute_description']
+
+    
+    inspector = ModelInspector(
+        hospital_ae_df, synthetic_df, attribute_description)
+
+    for attribute in synthetic_df.columns:
+        figure_filepath = os.path.join(
+            filepaths.plots_dir, 
+            mode + '_' + attribute + '.png'
+        )
+        inspector.compare_histograms(attribute, figure_filepath)
 
 
 

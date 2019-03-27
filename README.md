@@ -51,15 +51,6 @@ This tutorial is inspired by the [NHS England and ODI Leeds' research](https://o
 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. It's an excellent piece of software and their research is well worth checking out.  
 
-## Definitions
-
-I'll use a number of technical words repeatedly in this tutorial. So it's best if we we agree on what they mean:
-
-- **Anonymisation:** ...
-- **De-identification:** ...
-- **Re-identification:** ...
-- ...
-
 ## Setup
 
 First, make sure you have [Python3 installed](https://www.python.org/downloads/).

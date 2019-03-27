@@ -28,7 +28,7 @@ class ModelInspector(object):
         self.private_df.drop(columns=self.candidate_keys, inplace=True)
         self.synthetic_df.drop(columns=self.candidate_keys, inplace=True)
 
-    def compare_histograms(self, attribute):
+    def compare_histograms(self, attribute, figure_filepath):
         datatype = self.attribute_description[attribute]['data_type']
         is_categorical = self.attribute_description[attribute]['is_categorical']
 
@@ -84,6 +84,9 @@ class ModelInspector(object):
             ax2.set_xlim([x_min, x_max])
             ax2.set_ylim([y_min, y_max])
             fig.autofmt_xdate()
+
+            plt.savefig(figure_filepath, bbox_inches='tight')
+
 
     def mutual_information_heatmap(self, attributes: List = None):
         if attributes:

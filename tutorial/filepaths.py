@@ -4,11 +4,14 @@ from pathlib import Path
 
 this_filepath = Path(os.path.realpath(__file__))
 project_root = str(this_filepath.parents[1])
+
 data_dir = os.path.join(project_root, 'data/')
 
 # add the DataSynthesizer repo to the pythonpath
 data_synthesizer_dir = os.path.join(project_root, 'DataSynthesizer/')
 sys.path.append(data_synthesizer_dir)
+
+plots_dir = os.path.join(project_root, 'plots/')
 
 postcodes_london = os.path.join(data_dir, 'London postcodes.csv')
 hospitals_london = os.path.join(data_dir, 'hospitals_london.txt')
