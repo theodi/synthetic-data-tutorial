@@ -320,6 +320,24 @@ generator.generate_dataset_in_random_mode(
 generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_random)
 ```
 
+Lastly, we'll compare each attribute in the original data to the synthetic data by generating plots of histograms using the `ModelInspector` class.
+
+```python
+synthetic_df = pd.read_csv(synthetic_data_filepath)
+
+# Read attribute description from the dataset description file.
+attribute_description = read_json_file(description_filepath)['attribute_description']
+
+inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+
+for attribute in synthetic_df.columns:
+    inspector.compare_histograms(attribute, figure_filepath)
+```
+
+Let's look at the histogram plots now for a couple of the attributes.
+
+![Random mode age bracket histograms](./plots/random_Age bracket.png)
+
 ### Independent attribute mode - keep the patterns of each individual column
 
 What if we had the use case where we wanted to build models to analyse the medians of ages, or hospital usage? In this case we'd use independent attribute mode.

@@ -19,7 +19,6 @@ import scipy.stats as stats
 
 import filepaths
 
-# TODO: add in probabilities for some attributes
 # TODO: add correlations between attributes
 # TODO: give hospitals different average waiting times
 
@@ -31,8 +30,8 @@ def main():
 
     hospital_ae_dataset = {}
 
-    print('generating A&E admission IDs...')
-    hospital_ae_dataset['Attendance ID'] = generate_admission_ids()
+    # print('generating A&E admission IDs...')
+    # hospital_ae_dataset['Attendance ID'] = generate_admission_ids()
 
     print('generating Health Service ID numbers...')
     hospital_ae_dataset['Health Service ID'] = generate_health_service_id_numbers()
@@ -122,11 +121,21 @@ def generate_arrival_times() -> list:
         Hardcoding times to first week of April 2019
     """
     arrival_times = []
-    start = datetime(2019, 4, 1, 00, 00, 00)
-    end = datetime(2019, 4, 6, 23, 59, 59)
 
-    for _ in range(num_of_rows):
-        random_datetime = start + (end - start) * random.random()
+    # first 7 days in April 2019
+    days_dates = [1, 2, 3, 4, 5, 6, 7]
+    # have more people come in at the weekend - higher weights 
+    day_weights = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1]
+    days = random.choices(days_dates, day_weights, k=num_of_rows)
+    # this is just so each day has a different peak time
+    days_time_modes = {day: random.random() for day in days_dates}
+
+    for day in days:
+        start = datetime(2019, 4, day, 00, 00, 00)
+        end = datetime(2019, 4, day, 23, 59, 59)
+
+        random_num = random.triangular(0, 1, days_time_modes[day])
+        random_datetime = start + (end - start) * random_num
         arrival_times.append(random_datetime.strftime('%Y-%m-%d %H:%M:%S'))
 
     return arrival_times
@@ -137,12 +146,13 @@ def generate_times_in_ae() -> list:
     Method included tries to get a good spread around the mean without
     going below 1 minute or above 720 minutes (chosen arbitrarily).
     """
-    lower, upper = 1, 720
+    lower, upper = 10, 720
     mu, sigma = 30, 100
     # Normal distribution with upper and lower limits solution from stackoverflow
     # https://stackoverflow.com/questions/18441779/how-to-specify-upper-and-lower-limits-when-using-numpy-random-normal/44603019
     X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
     times_in_ae = X.rvs(num_of_rows).astype(int)
+
     return times_in_ae
 
 

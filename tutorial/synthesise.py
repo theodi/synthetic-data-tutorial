@@ -6,6 +6,7 @@ different files.
 
 import random 
 import os
+import time
 
 import pandas as pd
 import numpy as np
@@ -18,7 +19,7 @@ from lib.utils import read_json_file
 
 
 attribute_to_datatype = {
-    'Attendance ID': 'String', 
+    # 'Attendance ID': 'String', 
     'Time in A&E (mins)': 'Integer', 
     'Treatment': 'String', 
     'Gender': 'String', 
@@ -30,51 +31,82 @@ attribute_to_datatype = {
 }
 
 attribute_is_categorical = {
-    'Attendance ID': False, 
+    # 'Attendance ID': False, 
     'Time in A&E (mins)': False, 
     'Treatment': True, 
     'Gender': True, 
-    'Index of Multiple Deprivation Decile': False,
+    'Index of Multiple Deprivation Decile': True,
     'Hospital ID': True, 
     'Arrival Date': True, 
     'Arrival hour range': True,  
     'Age bracket': True
 }
 
-attribute_to_is_candidate_key = {
-    'Attendance ID': True
+mode_filepaths = {
+    'random': {
+        'description': filepaths.hospital_ae_description_random, 
+        'data': filepaths.hospital_ae_data_synthetic_random
+    },
+    'independent': {
+        'description': filepaths.hospital_ae_description_independent, 
+        'data': filepaths.hospital_ae_data_synthetic_independent
+    },
+    'correlated': {
+        'description': filepaths.hospital_ae_description_correlated, 
+        'data': filepaths.hospital_ae_data_synthetic_correlated
+    }
 }
 
 
 def main():
+    start = time.time()
+
     # "_df" is the usual way people refer to a Pandas DataFrame object
     hospital_ae_df = pd.read_csv(filepaths.hospital_ae_data_deidentify)
     category_threshold = hospital_ae_df['Treatment'].nunique()
 
-    # let's generate the same amount of rows (though we don't have to)
+    # let's generate the same amount of rows as original data (though we don't have to)
     num_rows = len(hospital_ae_df)
 
     # iterate through the 3 modes to generate synthetic data
-    for mode in ['random', 'independent', 'correlated']: 
+    for mode in ['random','independent', 'correlated']: 
+
+        print('describing synthetic data for', mode, 'mode...')
+        describe_synthetic_data(
+                mode, 
+                category_threshold, 
+                mode_filepaths[mode]['description']
+        )
+
         print('generating synthetic data for', mode, 'mode...')
-        description_filepath = describe_synthetic_data(
-            mode, category_threshold)
-        generate_synthetic_data(mode, num_rows, description_filepath)
-        compare_synthetic_data(mode, hospital_ae_df, description_filepath)
+        generate_synthetic_data(
+            mode, 
+            num_rows, 
+            mode_filepaths[mode]['description'],
+            mode_filepaths[mode]['data']
+        )
 
+        print('comparing synthetic data for', mode, 'mode...')
+        compare_synthetic_data(
+            mode, 
+            hospital_ae_df, 
+            mode_filepaths[mode]['description'],
+            mode_filepaths[mode]['data']
+        )
 
-    print('done.')
+    elapsed = round(time.time() - start, 2)
+    print('done in ' + str(elapsed) + ' seconds.')
 
 
 def describe_synthetic_data(
-        mode: str, category_threshold: int) -> str:
+        mode: str, category_threshold: int, description_filepath:str):
     '''
     Describes the synthetic data and saves it to the data/ directory.
 
     Keyword arguments:
     mode -- what type of synthetic data
     category_threshold -- limit at which categories are considered blah
-    num_rows -- number of rows in the synthetic dataset
+    description_filepath -- filepath to the data description
     '''
     describer = DataDescriber(category_threshold=category_threshold)
 
@@ -83,21 +115,17 @@ def describe_synthetic_data(
             filepaths.hospital_ae_data_deidentify,
             attribute_to_datatype=attribute_to_datatype,
             attribute_to_is_categorical=attribute_is_categorical)
-
-        description_filepath = filepaths.hospital_ae_description_random
     
     elif mode == 'independent':
         describer.describe_dataset_in_independent_attribute_mode(
             filepaths.hospital_ae_data_deidentify,
             attribute_to_datatype=attribute_to_datatype,
             attribute_to_is_categorical=attribute_is_categorical)
-
-        description_filepath = filepaths.hospital_ae_description_independent
     
     elif mode == 'correlated':
         # Increase epsilon value to reduce the injected noises. 
-        # Set epsilon=0 to turn off differential privacy. We're not using 
-        # differential privacy in this tutorial.
+        # We're not using differential privacy in this tutorial, 
+        # so we'll set epsilon=0 to turn off differential privacy 
         epsilon = 0
 
         # The maximum number of parents in Bayesian network
@@ -109,18 +137,18 @@ def describe_synthetic_data(
             epsilon=epsilon, 
             k=degree_of_bayesian_network,
             attribute_to_datatype=attribute_to_datatype,
-            attribute_to_is_categorical=attribute_is_categorical,
-            attribute_to_is_candidate_key=attribute_to_is_candidate_key)
-
-        description_filepath = filepaths.hospital_ae_description_correlated
+            attribute_to_is_categorical=attribute_is_categorical)
+            # attribute_to_is_candidate_key=attribute_to_is_candidate_key)
 
     describer.save_dataset_description_to_file(description_filepath)
 
-    return description_filepath
-
 
 def generate_synthetic_data(
-        mode: str, num_rows: int, description_filepath: str):
+        mode: str, 
+        num_rows: int, 
+        description_filepath: str,
+        synthetic_data_filepath: str
+    ):
     '''
     Generates the synthetic data and saves it to the data/ directory.
 
@@ -128,43 +156,45 @@ def generate_synthetic_data(
     mode -- what type of synthetic data
     num_rows -- number of rows in the synthetic dataset
     description_filepath -- filepath to the data description
+    synthetic_data_filepath -- filepath to where synthetic data written
     '''
     generator = DataGenerator()
 
     if mode == 'random':
-        generate_function = generator.generate_dataset_in_random_mode
-        data_filepath = filepaths.hospital_ae_data_synthetic_random 
+        generator.generate_dataset_in_random_mode(num_rows, description_filepath)
             
     elif mode == 'independent':
-        generate_function = generator.generate_dataset_in_independent_mode
-        data_filepath = filepaths.hospital_ae_data_synthetic_independent 
+        generator.generate_dataset_in_independent_mode(num_rows, description_filepath)
     
     elif mode == 'correlated':
-        generate_function = generator.generate_dataset_in_correlated_attribute_mode
-        data_filepath = filepaths.hospital_ae_data_synthetic_correlated
+        generator.generate_dataset_in_correlated_attribute_mode(num_rows, description_filepath)
 
-    generate_function(num_rows, description_filepath)    
-    generator.save_synthetic_data(data_filepath)
-
- 
-    print('done.')
+    generator.save_synthetic_data(synthetic_data_filepath)
 
 
-def compare_synthetic_data(mode, hospital_ae_df, description_filepath):
-    if mode == 'random':
-        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_random
-    elif mode == 'independent':
-        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_independent
-    elif mode == 'correlated':
-        synthetic_df_filepath = filepaths.hospital_ae_data_synthetic_correlated
+def compare_synthetic_data(
+        mode: str, 
+        hospital_ae_df: pd.DataFrame, 
+        description_filepath: str,
+        synthetic_data_filepath: str
+    ):
+    '''
+    Makes comapirson plots showing the histograms for each column in the 
+    synthetic data.
 
-    synthetic_df = pd.read_csv(synthetic_df_filepath)
+    Keyword arguments:
+    mode -- what type of synthetic data
+    hospital_ae_df -- DataFrame of the original dataset
+    description_filepath -- filepath to the data description
+    synthetic_data_filepath -- filepath to where synthetic data written
+    '''
+
+    synthetic_df = pd.read_csv(synthetic_data_filepath)
 
     # Read attribute description from the dataset description file.
     attribute_description = read_json_file(
         description_filepath)['attribute_description']
 
-    
     inspector = ModelInspector(
         hospital_ae_df, synthetic_df, attribute_description)
 

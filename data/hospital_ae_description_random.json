@@ -1,10 +1,9 @@
 {
     "meta": {
-        "num_tuples": 9891,
-        "num_attributes": 9,
+        "num_tuples": 9907,
+        "num_attributes": 8,
         "num_attributes_in_BN": 8,
         "all_attributes": [
-            "Attendance ID",
             "Time in A&E (mins)",
             "Treatment",
             "Gender",
@@ -14,52 +13,31 @@
             "Arrival hour range",
             "Age bracket"
         ],
-        "candidate_keys": [
-            "Attendance ID"
-        ],
-        "non_categorical_string_attributes": [
-            "Attendance ID"
-        ],
+        "candidate_keys": [],
+        "non_categorical_string_attributes": [],
         "attributes_in_BN": [
-            "Gender",
+            "Hospital ID",
             "Time in A&E (mins)",
             "Arrival Date",
+            "Gender",
             "Age bracket",
-            "Treatment",
+            "Arrival hour range",
             "Index of Multiple Deprivation Decile",
-            "Hospital ID",
-            "Arrival hour range"
+            "Treatment"
         ]
     },
     "attribute_description": {
-        "Attendance ID": {
-            "name": "Attendance ID",
-            "data_type": "String",
-            "is_categorical": false,
-            "is_candidate_key": true,
-            "min": 7,
-            "max": 10,
-            "missing_rate": 0.0,
-            "distribution_bins": [
-                7,
-                10
-            ],
-            "distribution_probabilities": [
-                0,
-                0
-            ]
-        },
         "Time in A&E (mins)": {
             "name": "Time in A&E (mins)",
             "data_type": "Integer",
             "is_categorical": false,
             "is_candidate_key": false,
-            "min": 1,
-            "max": 431,
+            "min": 10,
+            "max": 421,
             "missing_rate": 0.0,
             "distribution_bins": [
-                1.0,
-                431.0
+                10.0,
+                421.0
             ],
             "distribution_probabilities": [
                 0.5,
@@ -75,45 +53,45 @@
             "max": 44,
             "missing_rate": 0.0,
             "distribution_bins": [
-                "Burns review",
                 "Blood product transfusion",
-                "Sling/collar cuff/broad arm sling",
+                "Arterial line",
+                "Sutures",
                 "Anaesthesia",
-                "Infusion fluids",
+                "Dressing",
+                "Splint",
+                "Guidance/advice only",
+                "Joint aspiration",
+                "Other (consider alternatives)",
+                "Sling/collar cuff/broad arm sling",
+                "Defibrillation/pacing",
                 "Tetanus",
-                "Nasal airway",
-                "Minor surgery",
-                "Bandage/support",
                 "Central line",
                 "Physiotherapy",
-                "Resuscitation/cardiopulmonary resuscitation",
-                "Guidance/advice only",
-                "Splint",
-                "Oral airway",
-                "Arterial line",
-                "Incision & drainage",
-                "Recording vital signs",
-                "Fracture review",
-                "Defibrillation/pacing",
-                "Eye",
-                "None (consider guidance/advice option)",
-                "Urinary catheter/suprapubic",
-                "Nebuliser/spacer",
-                "Dental treatment",
-                "Chest drain",
-                "Dressing",
-                "Plaster of Paris",
                 "Wound cleaning",
+                "None (consider guidance/advice option)",
+                "Eye",
+                "Recording vital signs",
+                "Plaster of Paris",
                 "Social work intervention",
-                "Wound closure (excluding sutures)",
+                "Oral airway",
+                "Nasal airway",
                 "Removal foreign body",
-                "Dressing/wound review",
-                "Joint aspiration",
+                "Incision & drainage",
+                "Resuscitation/cardiopulmonary resuscitation",
                 "Lumbar puncture",
-                "Other (consider alternatives)",
-                "Sutures",
+                "Burns review",
+                "Bandage/support",
+                "Occupational Therapy",
+                "Chest drain",
+                "Fracture review",
+                "Dressing/wound review",
+                "Minor surgery",
+                "Nebuliser/spacer",
+                "Wound closure (excluding sutures)",
                 "Prescription/medicines prepared to take away",
-                "Occupational Therapy"
+                "Dental treatment",
+                "Infusion fluids",
+                "Urinary catheter/suprapubic"
             ],
             "distribution_probabilities": [
                 0.02564102564102564,
@@ -166,8 +144,8 @@
             "max": 6,
             "missing_rate": 0.0,
             "distribution_bins": [
-                "Male",
-                "Female"
+                "Female",
+                "Male"
             ],
             "distribution_probabilities": [
                 0.5,
@@ -177,18 +155,34 @@
         "Index of Multiple Deprivation Decile": {
             "name": "Index of Multiple Deprivation Decile",
             "data_type": "Integer",
-            "is_categorical": false,
+            "is_categorical": true,
             "is_candidate_key": false,
             "min": 1,
             "max": 10,
             "missing_rate": 0.0,
             "distribution_bins": [
-                1.0,
-                10.0
+                9,
+                6,
+                4,
+                8,
+                2,
+                7,
+                10,
+                3,
+                1,
+                5
             ],
             "distribution_probabilities": [
-                0.5,
-                0.5
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
             ]
         },
         "Hospital ID": {
@@ -200,32 +194,32 @@
             "max": 2,
             "missing_rate": 0.0,
             "distribution_bins": [
-                17,
-                9,
-                11,
-                23,
-                15,
-                8,
-                1,
-                4,
-                19,
-                2,
-                16,
-                13,
-                3,
-                26,
-                21,
                 14,
-                20,
+                16,
+                2,
+                17,
+                23,
+                12,
+                8,
+                11,
+                1,
+                22,
+                10,
+                7,
+                15,
+                21,
+                5,
+                4,
+                3,
                 24,
                 25,
-                10,
+                9,
                 6,
-                12,
+                13,
+                19,
+                26,
                 18,
-                5,
-                22,
-                7
+                20
             ],
             "distribution_probabilities": [
                 0,
@@ -265,20 +259,22 @@
             "max": 10,
             "missing_rate": 0.0,
             "distribution_bins": [
-                "2019-04-03",
-                "2019-04-02",
-                "2019-04-04",
                 "2019-04-05",
-                "2019-04-01",
-                "2019-04-06"
+                "2019-04-06",
+                "2019-04-07",
+                "2019-04-04",
+                "2019-04-02",
+                "2019-04-03",
+                "2019-04-01"
             ],
             "distribution_probabilities": [
-                0.16666666666666666,
-                0.16666666666666666,
-                0.16666666666666666,
-                0.16666666666666666,
-                0.16666666666666666,
-                0.16666666666666666
+                0.14285714285714285,
+                0.14285714285714285,
+                0.14285714285714285,
+                0.14285714285714285,
+                0.14285714285714285,
+                0.14285714285714285,
+                0.14285714285714285
             ]
         },
         "Arrival hour range": {
@@ -290,12 +286,12 @@
             "max": 5,
             "missing_rate": 0.0,
             "distribution_bins": [
-                "04-07",
-                "20-23",
+                "16-19",
                 "08-11",
                 "00-03",
                 "12-15",
-                "16-19"
+                "20-23",
+                "04-07"
             ],
             "distribution_probabilities": [
                 0.16666666666666666,
@@ -315,12 +311,12 @@
             "max": 5,
             "missing_rate": 0.0,
             "distribution_bins": [
-                "45-64",
-                "18-24",
                 "65-84",
-                "0-17",
                 "25-44",
-                "85-"
+                "0-17",
+                "45-64",
+                "85-",
+                "18-24"
             ],
             "distribution_probabilities": [
                 0.16666666666666666,
