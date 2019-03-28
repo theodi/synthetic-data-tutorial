@@ -336,7 +336,7 @@ for attribute in synthetic_df.columns:
 
 Let's look at the histogram plots now for a couple of the attributes.
 
-![Random mode age bracket histograms](./plots/random_Age bracket.png)
+![Random mode age bracket histograms](./plots/random_Age_bracket.png)
 
 ### Independent attribute mode - keep the patterns of each individual column
 
