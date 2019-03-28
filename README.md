@@ -267,6 +267,8 @@ If we were just to generate data for testing our software. We wouldn't care too 
 
 In this case, we can just generate the data at random using the `generate_dataset_in_random_mode` function within the `DataGenerator` class.
 
+#### Data Description
+
 The first step is to create a description of the data, defining the datatypes and which are the categorical variables.
 
 ```python
@@ -306,7 +308,9 @@ describer.describe_dataset_in_random_mode(
 
 You can see an example description file in `data/hospital_ae_description_random.json`.
 
-Then finally generate the random data. We'll just generatew the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
+#### Data Generation
+
+Next generate the random data. We'll just generate the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
 
 ```python
 num_rows = len(hospital_ae_df)
@@ -320,7 +324,9 @@ generator.generate_dataset_in_random_mode(
 generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_random)
 ```
 
-Lastly, we'll compare each attribute in the original data to the synthetic data by generating plots of histograms using the `ModelInspector` class.
+#### Attribute Comparison
+
+We'll compare each attribute in the original data to the synthetic data by generating plots of histograms using the `ModelInspector` class.
 
 ```python
 synthetic_df = pd.read_csv(synthetic_data_filepath)

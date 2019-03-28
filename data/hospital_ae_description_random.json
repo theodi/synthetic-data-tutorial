@@ -16,14 +16,14 @@
         "candidate_keys": [],
         "non_categorical_string_attributes": [],
         "attributes_in_BN": [
+            "Gender",
             "Index of Multiple Deprivation Decile",
             "Arrival Date",
-            "Treatment",
             "Arrival hour range",
-            "Age bracket",
+            "Treatment",
             "Time in A&E (mins)",
-            "Gender",
-            "Hospital ID"
+            "Hospital ID",
+            "Age bracket"
         ]
     },
     "attribute_description": {

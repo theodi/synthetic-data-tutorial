@@ -41,7 +41,7 @@ class ModelInspector(object):
         elif attribute in self.candidate_keys:
             return
         else:
-            fig = plt.figure(figsize=(20, 10), dpi=120)
+            fig = plt.figure(figsize=(25, 12), dpi=120)
             ax1 = fig.add_subplot(121)
             ax2 = fig.add_subplot(122)
 
@@ -64,8 +64,8 @@ class ModelInspector(object):
                 ax2.bar(pos_synt, normalize_given_distribution(dist_synt.values), align='center', width=0.8)
                 ax1.set_xticks(np.arange(min(pos_priv), max(pos_priv) + 1, 1.0))
                 ax2.set_xticks(np.arange(min(pos_synt), max(pos_synt) + 1, 1.0))
-                ax1.set_xticklabels(dist_priv.index.tolist(), fontsize=9)
-                ax2.set_xticklabels(dist_synt.index.tolist(), fontsize=9)
+                ax1.set_xticklabels(dist_priv.index.tolist(), fontsize=10)
+                ax2.set_xticklabels(dist_synt.index.tolist(), fontsize=10)
             # the rest are non-categorical numeric attributes.
             else:
                 ax1.hist(self.private_df[attribute].dropna(), bins=15, align='left', density=True)
