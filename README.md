@@ -334,9 +334,18 @@ for attribute in synthetic_df.columns:
     inspector.compare_histograms(attribute, figure_filepath)
 ```
 
-Let's look at the histogram plots now for a couple of the attributes.
+Let's look at the histogram plots now for a few of the attributes. We can that the data generated is completely random and doesn't contain any information about averages or distributions.
 
-![Random mode age bracket histograms](./plots/random_Age_bracket.png)
+**Comparison of ages in original data (left) and random synthetic data (right)**
+![Random mode age bracket histograms](plots/random_Age_bracket.png)
+
+**Comparison of hospital attendance in original data (left) and random synthetic data (right)**
+![Random mode age bracket histograms](plots/random_Hospital_ID.png)
+
+**Comparison of arrival date in original data (left) and random synthetic data (right)**
+![Random mode age bracket histograms](plots/random_Arrival_Date.png)
+
+You can see more examples in the `/plots` directory.
 
 ### Independent attribute mode - keep the patterns of each individual column
 

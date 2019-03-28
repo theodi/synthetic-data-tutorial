@@ -203,6 +203,8 @@ def compare_synthetic_data(
             filepaths.plots_dir, 
             mode + '_' + attribute + '.png'
         )
+        # need to replace whitespace in filepath for Markdown reference
+        figure_filepath = figure_filepath.replace(' ', '_')
         inspector.compare_histograms(attribute, figure_filepath)
 
 
