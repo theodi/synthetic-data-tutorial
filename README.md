@@ -67,6 +67,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+---
+
 ## Generate mock NHS A&E dataset
 
 You can use the `data/nhs_ae_mock.csv` as it is but preferably you should generate your own fresh dataset. At the very least look through the code in `tutorial/generate.py`.
@@ -100,6 +102,8 @@ Voila! You'll now see a `hospital_ae_data.csv` file in the `/data` directory. Op
 We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's Health Service ID's were to be leaked in future, lots of people could be re-identified.
 
 Because of this, we'll need to take some de-identification steps.
+
+---
 
 ## De-identification
 
@@ -238,6 +242,8 @@ hospital_ae_df = hospital_ae_df.drop('Age', 1)
 
 ### Health care coding
 
+---
+
 ## Synthesising
 
 Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
@@ -249,7 +255,6 @@ We'll make three types of synthetic data.
 1. Random – the values are generated randomly and bare no relation to the statistical patterns in the original data.
 2. Independent – The values are similar to the original data but contain no correlation info.  
 3. Correlated – Correlation info is kept in
-
 
 ### DataSynthesizer
 
@@ -267,7 +272,7 @@ If we were just to generate data for testing our software. We wouldn't care too 
 
 In this case, we can just generate the data at random using the `generate_dataset_in_random_mode` function within the `DataGenerator` class.
 
-#### Data Description
+#### Data Description: Random
 
 The first step is to create a description of the data, defining the datatypes and which are the categorical variables.
 
@@ -308,7 +313,7 @@ describer.describe_dataset_in_random_mode(
 
 You can see an example description file in `data/hospital_ae_description_random.json`.
 
-#### Data Generation
+#### Data Generation: Random
 
 Next generate the random data. We'll just generate the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
 
@@ -319,12 +324,13 @@ num_rows = len(hospital_ae_df)
 Now generate the random data
 
 ```python
+generator = DataGenerator()
 generator.generate_dataset_in_random_mode(
     num_rows, filepaths.hospital_ae_description_random)
 generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_random)
 ```
 
-#### Attribute Comparison
+#### Attribute Comparison: Random
 
 We'll compare each attribute in the original data to the synthetic data by generating plots of histograms using the `ModelInspector` class.
 
@@ -342,13 +348,13 @@ for attribute in synthetic_df.columns:
 
 Let's look at the histogram plots now for a few of the attributes. We can that the data generated is completely random and doesn't contain any information about averages or distributions.
 
-**Comparison of ages in original data (left) and random synthetic data (right)**
+*Comparison of ages in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Age_bracket.png)
 
-**Comparison of hospital attendance in original data (left) and random synthetic data (right)**
+*Comparison of hospital attendance in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Hospital_ID.png)
 
-**Comparison of arrival date in original data (left) and random synthetic data (right)**
+*Comparison of arrival date in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Arrival_Date.png)
 
 You can see more examples in the `/plots` directory.
@@ -359,6 +365,8 @@ What if we had the use case where we wanted to build models to analyse the media
 
 We'll describe and generate the independent data now.
 
+#### Data Description: Independent
+
 ```python
 describer.describe_dataset_in_independent_attribute_mode(
     filepaths.hospital_ae_data_deidentify,
@@ -366,16 +374,46 @@ describer.describe_dataset_in_independent_attribute_mode(
     attribute_to_is_categorical=attribute_is_categorical)
 
 describer.save_dataset_description_to_file(description_filepath)
+```
 
+#### Data Generation: Independent
+
+Next generate the data which keep the distributions of each column but not the data correlations.
+
+```python
+generator = DataGenerator()
 generator.generate_dataset_in_independent_mode(num_rows, description_filepath)
 generator.save_synthetic_data(synthetic_data_filepath)
 ```
+
+#### Attribute Comparison: Independent
+
+Comparing the attibute histograms we see the independent mode captures the distributions pretty accurately. You can see the synthetic data is _mostly_ similar but not exactly.
+
+```python
+synthetic_df = pd.read_csv(synthetic_data_filepath)
+attribute_description = read_json_file(description_filepath)['attribute_description']
+inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+for attribute in synthetic_df.columns:
+    inspector.compare_histograms(attribute, figure_filepath)
+```
+
+*Comparison of ages in original data (left) and independent synthetic data (right)*
+![Random mode age bracket histograms](plots/independent_Age_bracket.png)
+
+*Comparison of hospital attendance in original data (left) and independent synthetic data (right)*
+![Random mode age bracket histograms](plots/independent_Hospital_ID.png)
+
+*Comparison of arrival date in original data (left) and independent synthetic data (right)*
+![Random mode age bracket histograms](plots/independent_Arrival_Date.png)
 
 ### Correlated attribute mode - include correlations between columns in the data
 
 Lastly, if we care about, say, the number of old people attending a certain hospital and the waiting times dependent on hospitals. We'll need correlated data. To do this we use correlated mode.
 
 To understand how it works we need to understand Bayesian networks. These are graphs that show the dependency between different variables. You can read a very good tutorial on them at the [Probabilistic World site](https://www.probabilisticworld.com/bayesian-belief-networks-part-1/).
+
+#### Data Description: Correlated
 
 ```python
 describer.describe_dataset_in_correlated_attribute_mode(
@@ -387,11 +425,28 @@ describer.describe_dataset_in_correlated_attribute_mode(
     attribute_to_is_candidate_key=attribute_to_is_candidate_key)
 
 describer.save_dataset_description_to_file(description_filepath)
+```
 
+#### Data Generation: Correlated
+
+```python
 generator.generate_dataset_in_correlated_attribute_mode(
     num_rows, description_filepath)
 generator.save_synthetic_data(synthetic_data_filepath)
 ```
+
+#### Attribute Comparison: Correlated
+
+We can see correlated mode keeps similar distributions also. It looks the exact same but if you look closely there are small differences in the distributions.
+
+*Comparison of ages in original data (left) and correlated synthetic data (right)*
+![Random mode age bracket histograms](plots/correlated_Age_bracket.png)
+
+*Comparison of hospital attendance in original data (left) and independent synthetic data (right)*
+![Random mode age bracket histograms](plots/correlated_Hospital_ID.png)
+
+*Comparison of arrival date in original data (left) and independent synthetic data (right)*
+![Random mode age bracket histograms](plots/correlated_Arrival_Date.png)
 
 ---
 
