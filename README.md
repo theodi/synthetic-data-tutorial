@@ -8,7 +8,7 @@ A hands-on tutorial showing how to use Python to create synthetic data.
 
 **Wait, what is this "synthetic data" you speak of?**
 
-It's data that is created by an automated process which contains many of the statistical patterns of an original dataset. It is also sometimes used as a way to release data that has no personal information in it, even if the original did contain lots of data that could identify people. This means programmers and data scientists can crack on building software and algorithms that they know will work similarly on the real data.
+It's data that is created by an automated process which contains many of the statistical patterns of an original dataset. It is also sometimes used as a way to release data that has no personal information in it, even if the original did contain lots of data that could identify people. This means programmers and data scientists can crack on with building software and algorithms that they know will work similarly on the real data.
 
 **Who is this tutorial for?**
 
@@ -32,7 +32,9 @@ Sure! Let's go.
 
 ## Overview
 
-In this tutorial you are aiming to open accident and emergency (A&E) data from multiple hospitals in London. This data obviously contains some sensitive personal information about people's health and can't be openly shared. By removing and altering certain identifying information in the data we can greatly reduce the risk that patients can be re-identified.
+In this tutorial you are aiming to create a safe version of accident and emergency (A&E) data collected from multiple hospitals. This data contains some sensitive personal information about people's health and can't be openly shared. By removing and altering certain identifying information in the data we can greatly reduce the risk that patients can be re-identified and therefore hope to release the data.
+
+Just to be clear, we're not using actual A&E data but are creating our own simple, mock, version of it.
 
 The practical steps involve:
 
@@ -47,8 +49,7 @@ Not exactly. Patterns picked up in the original data can be transferred to the s
 
 ## Credit to others
 
-This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data. Just to be clear, we're not using their data but are creating our own simple, mock version of it. We, of course, don't have access to the NHS's highly sensitive A&E data (and nor should we!).
-
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data. 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming out of University of Washington, it's an excellent piece of software and their research and papers are well worth checking out.  
 
 ---
@@ -259,17 +260,17 @@ Now we've gotten to the stage where we'll create a synthetic version of our de-i
 
 Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data to carrying most of the statistical patterns of the original dataset.
 
-The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this.
+The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this in more detail.
 
-For us, we'll create three types of synthetic data.
+For us though, we'll create three types of synthetic data.
 
-1. Random – the attributes names and datatypes are kept but the values are random and bare no relation to the patterns in the original data.
+1. Random – the attributes names and datatypes are kept but the values are random and have no relation to the patterns in the original data.
 2. Independent – the attribute names and datatypes are kept, the distributions of each attribute are similar but there is no correlation info kept between attributes.  
 3. Correlated – Correlation info is kept in along with attirbute names and datatypes.
 
 ### DataSynthesizer
 
-An open source toolkit for generating synthetic data.
+An open source toolkit for generating synthetic data creating by researchers from Drexel University and University of Washington. It's available as a [repo on Github](https://github.com/DataResponsibly/DataSynthesizer) and includes some short tutorials on how to use the toolkit and an accompanying research paper describing the theory behind it.
 
 > DataSynthesizer consists of three high-level modules:
 >
@@ -291,7 +292,6 @@ The first step is to create a description of the data, defining the datatypes an
 
 ```python
 attribute_to_datatype = {
-    'Attendance ID': 'String',
     'Time in A&E (mins)': 'Integer',
     'Treatment': 'String',
     'Gender': 'String',
@@ -303,7 +303,6 @@ attribute_to_datatype = {
 }
 
 attribute_is_categorical = {
-    'Attendance ID': False,
     'Hospital ID': True,
     'Time in A&E (mins)': False,
     'Treatment': True,
@@ -500,5 +499,7 @@ If you have any queries, comments or improvements about this tutorial please do 
 
 - [Exploring methods for synthetic A&E data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data) - Jonathan Pearson, NHS with Open Data Institute Leeds.
 - [DataSynthesizer Github Repository](https://github.com/DataResponsibly/DataSynthesizer)
-- [DataSynthesizer: Privacy-Preserving Synthetic Datasets](https://faculty.washington.edu/billhowe/publications/pdfs/ping17datasynthesizer.pdf) Haoyue Ping, Julia Stoyanovich, Bill Howe. 2017.
+- [DataSynthesizer: Privacy-Preserving Synthetic Datasets](https://faculty.washington.edu/billhowe/publications/pdfs/ping17datasynthesizer.pdf) Haoyue Ping, Julia Stoyanovich, and Bill Howe. 2017
 - [ONS methodology working paper series number 16 - Synthetic data pilot](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot) - Office of National Statistics, 2019.
+- [Wrap-up blog post](http://theodi.org) (not yet published) from our anonymisation project which talks about what we learned and other outputs we created.
+- We referred to the [UK Anonymisation Network's Decision Making Framework](https://ukanon.net/ukan-resources/ukan-decision-making-framework/) a lot during our work. There's a lot in it but it's excellent as a deep-dive resource on anonymisation.
