@@ -222,7 +222,7 @@ hospital_ae_df['Arrival Hour'] = arrival_times.dt.hour
 hospital_ae_df['Arrival hour range'] = pd.cut(
     hospital_ae_df['Arrival Hour'],
     bins=[0, 4, 8, 12, 16, 20, 24],
-    labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'], 
+    labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'],
     include_lowest=True
 )
 hospital_ae_df = hospital_ae_df.drop('Arrival Time', 1)
@@ -231,7 +231,7 @@ hospital_ae_df = hospital_ae_df.drop('Arrival Hour', 1)
 
 ### Patient demographics
 
-> I decided to only include records with a sex of male or female in order to reduce risk of re identification through low numbers. 
+> I decided to only include records with a sex of male or female in order to reduce risk of re identification through low numbers.
 
 ```python
 hospital_ae_df = hospital_ae_df[
@@ -257,13 +257,15 @@ hospital_ae_df = hospital_ae_df.drop('Age', 1)
 
 Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
 
-Synthetic data exists on a spectrum from merely the same structure as the original data to carrying most of the statistical patterns of the original dataset. The columns all contain data similar in type to the original but vary in how similar they are to the original.
+Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data to carrying most of the statistical patterns of the original dataset.
 
-We'll make three types of synthetic data.
+The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this.
 
-1. Random – the values are generated randomly and bare no relation to the statistical patterns in the original data.
-2. Independent – The values are similar to the original data but contain no correlation info.  
-3. Correlated – Correlation info is kept in
+For us, we'll create three types of synthetic data.
+
+1. Random – the attributes names and datatypes are kept but the values are random and bare no relation to the patterns in the original data.
+2. Independent – the attribute names and datatypes are kept, the distributions of each attribute are similar but there is no correlation info kept between attributes.  
+3. Correlated – Correlation info is kept in along with attirbute names and datatypes.
 
 ### DataSynthesizer
 
