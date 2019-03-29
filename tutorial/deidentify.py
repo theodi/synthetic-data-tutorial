@@ -4,6 +4,7 @@ set of de-identification steps. It then saves this as a new dataset.
 '''
 import random 
 import time
+import string
 
 import pandas as pd
 import numpy as np
@@ -118,12 +119,11 @@ def replace_hospital_with_random_number(
     hospital_ae_df -- Hopsitals A&E records dataframe
     """
 
-    hospitals = list(set(hospital_ae_df['Hospital'].tolist()))
+    hospitals = hospital_ae_df['Hospital'].unique().tolist()
     random.shuffle(hospitals)
-    hospital_ids = range(1, len(hospitals)+1)
     hospitals_map = {
-        hospital : hospital_id
-        for hospital, hospital_id in zip(hospitals, hospital_ids)
+        hospital : ''.join(random.choices(string.digits, k=6))
+        for hospital in hospitals
     }
     hospital_ae_df['Hospital ID'] = hospital_ae_df['Hospital'].map(hospitals_map)
     hospital_ae_df = hospital_ae_df.drop('Hospital', 1)
