@@ -88,8 +88,7 @@ class ModelInspector(object):
             plt.savefig(figure_filepath, bbox_inches='tight')
             plt.close()
 
-
-    def mutual_information_heatmap(self, attributes: List = None):
+    def mutual_information_heatmap(self, figure_filepath, attributes: List = None):
         if attributes:
             private_df = self.private_df[attributes]
             synthetic_df = self.synthetic_df[attributes]
@@ -111,6 +110,9 @@ class ModelInspector(object):
         fig.autofmt_xdate()
         fig.tight_layout()
         plt.subplots_adjust(top=0.83)
+
+        plt.savefig(figure_filepath, bbox_inches='tight')
+        plt.close()
 
 
 if __name__ == '__main__':

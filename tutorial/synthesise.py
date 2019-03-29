@@ -86,8 +86,16 @@ def main():
             mode_filepaths[mode]['data']
         )
 
-        print('comparing synthetic data for', mode, 'mode...')
-        compare_synthetic_data(
+        print('comparing histograms for', mode, 'mode...')
+        compare_histograms(
+            mode, 
+            hospital_ae_df, 
+            mode_filepaths[mode]['description'],
+            mode_filepaths[mode]['data']
+        )
+
+        print('comparing pairwise mutual information for', mode, 'mode...')
+        compare_pairwise_mutual_information(
             mode, 
             hospital_ae_df, 
             mode_filepaths[mode]['description'],
@@ -172,7 +180,7 @@ def generate_synthetic_data(
     generator.save_synthetic_data(synthetic_data_filepath)
 
 
-def compare_synthetic_data(
+def compare_histograms(
         mode: str, 
         hospital_ae_df: pd.DataFrame, 
         description_filepath: str,
@@ -207,6 +215,36 @@ def compare_synthetic_data(
         figure_filepath = figure_filepath.replace(' ', '_')
         inspector.compare_histograms(attribute, figure_filepath)
 
+def compare_pairwise_mutual_information(
+        mode: str, 
+        hospital_ae_df: pd.DataFrame, 
+        description_filepath: str,
+        synthetic_data_filepath: str
+    ):
+    '''
+    Looks at correlation of attributes by producing heatmap
+
+    Keyword arguments:
+    mode -- what type of synthetic data
+    hospital_ae_df -- DataFrame of the original dataset
+    description_filepath -- filepath to the data description
+    synthetic_data_filepath -- filepath to where synthetic data written
+    '''
+
+    synthetic_df = pd.read_csv(synthetic_data_filepath)
+
+    attribute_description = read_json_file(
+        description_filepath)['attribute_description']
+
+    inspector = ModelInspector(
+        hospital_ae_df, synthetic_df, attribute_description)
+
+    figure_filepath = os.path.join(
+        filepaths.plots_dir, 
+        'mutual_information_heatmap_' + mode + '.png'
+    )
+
+    inspector.mutual_information_heatmap(figure_filepath)
 
 
 if __name__ == "__main__":

@@ -16,6 +16,8 @@ import time
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
+from scipy.linalg import eigh, cholesky
+from scipy.stats import norm
 
 import filepaths
 
@@ -23,6 +25,7 @@ import filepaths
 # TODO: give hospitals different average waiting times
 
 num_of_rows = 10000
+
 
 def main():
     print('generating data...')
@@ -36,6 +39,9 @@ def main():
     print('generating Health Service ID numbers...')
     hospital_ae_dataset['Health Service ID'] = generate_health_service_id_numbers()
 
+    print('generating patient ages...')
+    hospital_ae_dataset['Age'] = generates_ages()
+
     print('generating hospital instances...')
     hospital_ae_dataset['Hospital'] = generate_hospitals()
 
@@ -43,16 +49,13 @@ def main():
     hospital_ae_dataset['Arrival Time'] = generate_arrival_times()
 
     print('generating times spent in A&E...')
-    hospital_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae()
+    hospital_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae(hospital_ae_dataset['Age'])
 
     print('generating A&E treaments...')
     hospital_ae_dataset['Treatment'] = generate_treatments()
 
     print('generating patient gender instances...')
     hospital_ae_dataset['Gender'] = generate_genders()
-
-    print('generating patient ages...')
-    hospital_ae_dataset['Age'] = generates_ages()
 
     print('generating patient postcodes...')
     hospital_ae_dataset['Postcode'] = generate_postcodes()
@@ -109,7 +112,6 @@ def generate_hospitals() -> list:
         hospitals = file_in.readlines()
     hospitals = [name.strip() for name in hospitals]
 
-    # likelihood each of these hospitals will get chosen
     weights = random.choices(range(1, 100), k=len(hospitals))
     hospitals = random.choices(hospitals, k=num_of_rows, weights=weights)
 
@@ -141,7 +143,7 @@ def generate_arrival_times() -> list:
     return arrival_times
 
 
-def generate_times_in_ae() -> list:
+def generate_times_in_ae(ages) -> list:
     """ Generate and return length of times in A&E.
     Method included tries to get a good spread around the mean without
     going below 1 minute or above 720 minutes (chosen arbitrarily).
