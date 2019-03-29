@@ -49,8 +49,9 @@ Not exactly. Patterns picked up in the original data can be transferred to the s
 
 ## Credit to others
 
-This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data. 
-Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming from researchers in Drexel University and University of Washington, it's an excellent piece of software and their research and papers are well worth checking out.  
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data.
+
+Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming from researchers in Drexel University and University of Washington, it's an excellent piece of software and their research and papers are well worth checking out. It's available as a [repo on Github](https://github.com/DataResponsibly/DataSynthesizer) which includes some short tutorials on how to use the toolkit and an accompanying research paper describing the theory behind it.
 
 ---
 
@@ -277,11 +278,11 @@ hospital_ae_df.to_csv(filepaths.hospital_ae_data_deidentify, index=False)
 
 ## Synthesising
 
-Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
+Now we've gotten to the stage where we'll create a synthetic version of our data.
 
-Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data to carrying most of the statistical patterns of the original dataset.
+Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data all the way to carrying nearly all of the statistical patterns of the original dataset.
 
-The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this in more detail.
+The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this the nuances in this in more detail.
 
 For us though, we'll create three types of synthetic data.
 
@@ -291,7 +292,9 @@ For us though, we'll create three types of synthetic data.
 
 ### DataSynthesizer
 
-An open source toolkit for generating synthetic data creating by researchers from Drexel University and University of Washington. It's available as a [repo on Github](https://github.com/DataResponsibly/DataSynthesizer) and includes some short tutorials on how to use the toolkit and an accompanying research paper describing the theory behind it.
+As described above, this is an open source toolkit for generating synthetic data. We'll be using it here to create our three synthetic datasets.
+
+We'll use the creators very own description of the different parts of DataSynthetizer.
 
 > DataSynthesizer consists of three high-level modules:
 >
