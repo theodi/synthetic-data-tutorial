@@ -172,11 +172,11 @@ hospital_ae_df = pd.merge(
 )
 ```
 
-Next calculate the decile bins for the IMDs by taking all the IMDs from large list of London. We'll use the pandas `qcut` (quantile cut), function for this.
+Next calculate the decile bins for the IMDs by taking all the IMDs from large list of London. We'll use the Pandas `qcut` (quantile cut), function for this.
 
 ```python
 _, bins = pd.qcut(
-    postcodes_df['Index of Multiple Deprivation'], 10, 
+    postcodes_df['Index of Multiple Deprivation'], 10,
     retbins=True, labels=False
 )
 ```
@@ -198,11 +198,11 @@ hospital_ae_df = hospital_ae_df.drop('Lower layer super output area', 1)
 
 ### Individual hospitals
 
-NHS England masked individual hospitals, giving these reasons.
+The data scientist at NHS England masked individual hospitals giving the following reason.
 
 > As each hospital has its own complex case mix and health system, using these data to identify poor performance or possible improvements would be invalid and un-helpful. Therefore, I decided to replace the hospital code with a random number.
 
-So let's do just that.
+So we'll do as they did, replacing hospitals with a random six-digit ID.
 
 ```python
 hospitals = hospital_ae_df['Hospital'].unique().tolist()
@@ -224,18 +224,24 @@ hospital_ae_df = hospital_ae_df.drop('Hospital', 1)
 
 > The next obvious step was to simplify some of the time information I have available as health care system analysis doesn't need to be responsive enough to work on a second and minute basis. Thus, I removed the time information from the 'arrival date', mapped the 'arrival time' into 4-hour chunks
 
+First we'll split the `Arrival Time` column in to `Arrival Date` and `Arrival Hour`.
+
 ```python
 arrival_times = pd.to_datetime(hospital_ae_df['Arrival Time'])
 hospital_ae_df['Arrival Date'] = arrival_times.dt.strftime('%Y-%m-%d')
 hospital_ae_df['Arrival Hour'] = arrival_times.dt.hour
+hospital_ae_df = hospital_ae_df.drop('Arrival Time', 1)
+```
 
+Then we'll map the hours to 4-hour chunks and drop the `Arrival Hour` column.
+
+```python
 hospital_ae_df['Arrival hour range'] = pd.cut(
     hospital_ae_df['Arrival Hour'],
     bins=[0, 4, 8, 12, 16, 20, 24],
     labels=['00-03', '04-07', '08-11', '12-15', '16-19', '20-23'],
     include_lowest=True
 )
-hospital_ae_df = hospital_ae_df.drop('Arrival Time', 1)
 hospital_ae_df = hospital_ae_df.drop('Arrival Hour', 1)
 ```
 
@@ -259,6 +265,12 @@ hospital_ae_df['Age bracket'] = pd.cut(
     include_lowest=True
 )
 hospital_ae_df = hospital_ae_df.drop('Age', 1)
+```
+
+That's all the steps we'll take. We'll finally save our new de-identified dataset.
+
+```python
+hospital_ae_df.to_csv(filepaths.hospital_ae_data_deidentify, index=False)
 ```
 
 ---
