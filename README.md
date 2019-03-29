@@ -93,13 +93,13 @@ Voila! You'll now see a `hospital_ae_data.csv` file in the `/data` directory. Op
 
 - **Attendance ID**: a unique ID generated for every admission to A&E
 - **Health Service ID**: NHS number of the admitted patient  
-- **Hospital**: which hospital admitted the patient
-- **Arrival Time**: what time and date the patient was admitted
+- **Hospital**: which hospital admitted the patient - with some hospitals being more prevalent in the data than others.
+- **Arrival Time**: what time and date the patient was admitted - added weekend as busier and different peak time for each day.
 - **Time in A&E (mins)**: time (in minutes) of how long the patient spent in A&E
-- **Treatment**: what the person was treated for
+- **Treatment**: what the person was treated for - with certain treatments being more common than others
 - **Gender**: patient gender, see [NHS patient gender codes](https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1)
-- **Age**: age of patient
-- **Postcode**: postcode of patient
+- **Age**: age of patient - following age distribution roughly similar to London
+- **Postcode**: postcode of patient - random London postcodes
 
 We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's Health Service ID's were to be leaked in future, lots of people could be re-identified.
 
@@ -257,7 +257,7 @@ hospital_ae_df = hospital_ae_df.drop('Age', 1)
 
 Now we've gotten to the stage where we'll create a synthetic version of our de-identified data.
 
-Synthetic data exists on a spectrum from merely the same structure as the original data to carrying most of the statistical patterns of the original dataset. The columns all contain data similar in type to the original but vary in how similar they are to the origianl. 
+Synthetic data exists on a spectrum from merely the same structure as the original data to carrying most of the statistical patterns of the original dataset. The columns all contain data similar in type to the original but vary in how similar they are to the original.
 
 We'll make three types of synthetic data.
 
