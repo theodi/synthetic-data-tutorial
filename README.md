@@ -50,7 +50,7 @@ Not exactly. Patterns picked up in the original data can be transferred to the s
 ## Credit to others
 
 This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data. 
-Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming out of University of Washington, it's an excellent piece of software and their research and papers are well worth checking out.  
+Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming from researchers in Drexel University and University of Washington, it's an excellent piece of software and their research and papers are well worth checking out.  
 
 ---
 
@@ -90,17 +90,17 @@ Next simply go to the project root directory and run the `generate.py` script.
 python tutorial/generate.py
 ```
 
-Voila! You'll now see a `hospital_ae_data.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
+Voila! You'll now see a new `hospital_ae_data.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
 
 - **Attendance ID**: a unique ID generated for every admission to A&E
 - **Health Service ID**: NHS number of the admitted patient  
-- **Hospital**: which hospital admitted the patient - with some hospitals being more prevalent in the data than others.
-- **Arrival Time**: what time and date the patient was admitted - added weekend as busier and different peak time for each day.
-- **Time in A&E (mins)**: time (in minutes) of how long the patient spent in A&E
+- **Hospital**: which hospital admitted the patient - with some hospitals being more prevalent in the data than others
+- **Arrival Time**: what time and date the patient was admitted - with weekends as busier and and a different peak time for each day
+- **Time in A&E (mins)**: time in minutes of how long the patient spent in A&E
 - **Treatment**: what the person was treated for - with certain treatments being more common than others
-- **Gender**: patient gender, see [NHS patient gender codes](https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1)
+- **Gender**: patient gender - based on [NHS patient gender codes](https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1)
 - **Age**: age of patient - following age distribution roughly similar to London
-- **Postcode**: postcode of patient - random London postcodes
+- **Postcode**: postcode of patient - random, in use, London postcodes extracted from the `London postcodes.csv` file.
 
 We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's Health Service ID's were to be leaked in future, lots of people could be re-identified.
 
@@ -110,19 +110,28 @@ Because of this, we'll need to take some de-identification steps.
 
 ## De-identification
 
-For this stage, we're going to be loosely following the de-identification techniques used when NHS England was [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
+For this stage, we're going to be loosely following the de-identification techniques used which NHS England describe in a blog post about [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
-We pass the data through the following de-identification process. If you look in `tutorial/deidentify.py` you'll see the steps involved.
-
-It first loads the `data/nhs_ae_data.csv` file in to the Pandas DataFrame as `hospital_ae_df`.
+If you look in `tutorial/deidentify.py` you'll see the full code of all deidentification steps. You can run this code easily.
 
 ```python
-hospital_ae_df = pd.read_csv(filepaths.nhs_ae_data)
+python tutorial/deidentify.py
 ```
+
+It takes the `data/hospital_ae_data.csv` file, run the steps, and saves the new dataset to `data/hospital_ae_data_deidentify.csv`.
+
+Breaking down each of these steps. It first loads the `data/nhs_ae_data.csv` file in to the Pandas DataFrame as `hospital_ae_df`.
+
+```python
+# _df is a common way to refer to a Pandas DataFrame object
+hospital_ae_df = pd.read_csv(filepaths.hospital_ae_data)
+```
+
+(`filepaths.py` is, surprise, surprise, where all the filepaths are listed)
 
 ### Remove Health Service ID numbers
 
-Health Service ID numbers are direct identifiers and should be removed. So we'll drop the entire column.
+Health Service ID numbers are direct identifiers and should be removed. So we'll simply drop the entire column.
 
 ```python
 hospital_ae_df = hospital_ae_df.drop('Health Service ID', 1)
@@ -130,7 +139,7 @@ hospital_ae_df = hospital_ae_df.drop('Health Service ID', 1)
 
 ### Where a patient lives
 
-Pseudo-indentifiers, also known as [quasi-identifiers](https://en.wikipedia.org/wiki/Quasi-identifier), are pieces of information that don't directly identify people but can used with other information to identify a person. If we were to take the age, postcode and gender of a person we could combine these and check the dataset to see what that person treated for in A&E.
+Pseudo-indentifiers, also known as [quasi-identifiers](https://en.wikipedia.org/wiki/Quasi-identifier), are pieces of information that don't directly identify people but can used with other information to identify a person. If we were to take the age, postcode and gender of a person we could combine these and check the dataset to see what that person was treated for in A&E.
 
 The data scientist from NHS England, Jonathan Pearson, describes this in the blog post:
 
@@ -138,13 +147,13 @@ The data scientist from NHS England, Jonathan Pearson, describes this in the blo
 
 We'll do just the same with our dataset.
 
-First we'll map the postcodes to their LSOA and drop the postcodes.
+First we'll map the rows' postcodes to their LSOA and then drop the postcodes column.
 
 ```python
 postcodes_df = pd.read_csv(filepaths.postcodes_london)
 hospital_ae_df = pd.merge(
     hospital_ae_df,
-    postcodes_df[['Postcode', 'Lower layer super output area']], 
+    postcodes_df[['Postcode', 'Lower layer super output area']],
     on='Postcode'
 )
 hospital_ae_df = hospital_ae_df.drop('Postcode', 1)
