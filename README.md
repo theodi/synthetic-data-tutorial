@@ -269,6 +269,8 @@ For us, we'll create three types of synthetic data.
 
 ### DataSynthesizer
 
+An open source toolkit for generating synthetic data.
+
 > DataSynthesizer consists of three high-level modules:
 >
 > 1. DataDescriber: investigates the data types, correlations and distributions of the attributes in the private dataset, and produces a data summary.
@@ -496,7 +498,7 @@ If you have any queries, comments or improvements about this tutorial please do 
 
 ### References
 
-- [A comparative study of synthetic dataset generation techniques](https://dl.comp.nus.edu.sg/bitstream/handle/1900.100/7050/TRA6-18.pdf?sequence=1&isAllowed=y) - Ashish Dandekar, Remmy A. M. Zen, Stéphane Bressan
 - [Exploring methods for synthetic A&E data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data) - Jonathan Pearson, NHS with Open Data Institute Leeds.
 - [DataSynthesizer Github Repository](https://github.com/DataResponsibly/DataSynthesizer)
 - [DataSynthesizer: Privacy-Preserving Synthetic Datasets](https://faculty.washington.edu/billhowe/publications/pdfs/ping17datasynthesizer.pdf) Haoyue Ping, Julia Stoyanovich, Bill Howe. 2017.
+- [ONS methodology working paper series number 16 - Synthetic data pilot](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot) - Office of National Statistics, 2019.
