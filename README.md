@@ -359,6 +359,8 @@ describer.describe_dataset_in_random_mode(
     filepaths.hospital_ae_data_deidentify,
     attribute_to_datatype=attribute_to_datatype,
     attribute_to_is_categorical=attribute_is_categorical)
+describer.save_dataset_description_to_file(
+    filepaths.hospital_ae_description_random)
 ```
 
 You can see an example description file in `data/hospital_ae_description_random.json`.
@@ -390,7 +392,8 @@ We'll compare each attribute in the original data to the synthetic data by gener
 synthetic_df = pd.read_csv(synthetic_data_filepath)
 
 # Read attribute description from the dataset description file.
-attribute_description = read_json_file(description_filepath)['attribute_description']
+attribute_description = read_json_file(
+    filepaths.hospital_ae_description_random)['attribute_description']
 
 inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
 
@@ -398,7 +401,7 @@ for attribute in synthetic_df.columns:
     inspector.compare_histograms(attribute, figure_filepath)
 ```
 
-Let's look at the histogram plots now for a few of the attributes. We can that the data generated is completely random and doesn't contain any information about averages or distributions.
+Let's look at the histogram plots now for a few of the attributes. We can see that the generated data is completely random and doesn't contain any information about averages or distributions.
 
 *Comparison of ages in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Age_bracket.png)
@@ -409,7 +412,7 @@ Let's look at the histogram plots now for a few of the attributes. We can that t
 *Comparison of arrival date in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Arrival_Date.png)
 
-You can see more examples in the `/plots` directory.
+You can see more comparison examples in the `/plots` directory. 
 
 #### Compare pairwise mutual information: Random
 
@@ -420,21 +423,18 @@ No correlations.
 *Mutual Information Heatmap in original data (left) and random synthetic data (right)*
 ![Random mode age mutual information](plots/mutual_information_heatmap_random.png)
 
-### Independent attribute mode - keep the patterns of each individual column
+### Independent attribute mode
 
-What if we had the use case where we wanted to build models to analyse the medians of ages, or hospital usage? In this case we'd use independent attribute mode.
-
-We'll describe and generate the independent data now.
+What if we had the use case where we wanted to build models to analyse the medians of ages, or hospital usage in the synthetic data? In this case we'd use independent attribute mode.
 
 #### Data Description: Independent
 
 ```python
 describer.describe_dataset_in_independent_attribute_mode(
-    filepaths.hospital_ae_data_deidentify,
     attribute_to_datatype=attribute_to_datatype,
     attribute_to_is_categorical=attribute_is_categorical)
-
-describer.save_dataset_description_to_file(description_filepath)
+describer.save_dataset_description_to_file(
+    filepaths.hospital_ae_description_independent)
 ```
 
 #### Data Generation: Independent
@@ -443,8 +443,10 @@ Next generate the data which keep the distributions of each column but not the d
 
 ```python
 generator = DataGenerator()
-generator.generate_dataset_in_independent_mode(num_rows, description_filepath)
-generator.save_synthetic_data(synthetic_data_filepath)
+generator.generate_dataset_in_independent_mode(
+    num_rows, filepaths.hospital_ae_description_independent)
+generator.save_synthetic_data(
+    filepaths.hospital_ae_data_synthetic_independent)
 ```
 
 #### Attribute Comparison: Independent
@@ -452,9 +454,11 @@ generator.save_synthetic_data(synthetic_data_filepath)
 Comparing the attribute histograms we see the independent mode captures the distributions pretty accurately. You can see the synthetic data is _mostly_ similar but not exactly.
 
 ```python
-synthetic_df = pd.read_csv(synthetic_data_filepath)
-attribute_description = read_json_file(description_filepath)['attribute_description']
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_random)
+attribute_description = read_json_file(
+    filepaths.hospital_ae_description_random)['attribute_description']
 inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+
 for attribute in synthetic_df.columns:
     inspector.compare_histograms(attribute, figure_filepath)
 ```
@@ -479,7 +483,7 @@ No correlations.
 
 ### Correlated attribute mode - include correlations between columns in the data
 
-Lastly, if we care about, say, the number of old people attending a certain hospital and the waiting times dependent on hospitals. We'll need correlated data. To do this we use correlated mode.
+If we want to capture correlated variables, for instance if the number of old people attending a certain hospital and the waiting times were all related, we'll need correlated data. To do this we use *correlated mode*.
 
 To understand how it works we need to understand Bayesian networks. These are graphs that show the dependency between different variables. You can read a very good tutorial on them at the [Probabilistic World site](https://www.probabilisticworld.com/bayesian-belief-networks-part-1/).
 
@@ -491,23 +495,23 @@ describer.describe_dataset_in_correlated_attribute_mode(
     epsilon=epsilon,
     k=degree_of_bayesian_network,
     attribute_to_datatype=attribute_to_datatype,
-    attribute_to_is_categorical=attribute_is_categorical,
-    attribute_to_is_candidate_key=attribute_to_is_candidate_key)
+    attribute_to_is_categorical=attribute_is_categorical)
 
-describer.save_dataset_description_to_file(description_filepath)
+describer.save_dataset_description_to_file(
+    filepaths.hospital_ae_description_correlated)
 ```
 
 #### Data Generation: Correlated
 
 ```python
 generator.generate_dataset_in_correlated_attribute_mode(
-    num_rows, description_filepath)
-generator.save_synthetic_data(synthetic_data_filepath)
+    num_rows, filepaths.hospital_ae_description_correlated)
+generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_correlated)
 ```
 
 #### Attribute Comparison: Correlated
 
-We can see correlated mode keeps similar distributions also. It looks the exact same but if you look closely there are small differences in the distributions.
+We can see correlated mode keeps similar distributions also. It looks the exact same but if you look closely there are also small differences in the distributions.
 
 *Comparison of ages in original data (left) and correlated synthetic data (right)*
 ![Random mode age bracket histograms](plots/correlated_Age_bracket.png)
