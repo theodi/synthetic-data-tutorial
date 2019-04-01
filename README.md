@@ -20,11 +20,11 @@ Non-programmers. Although we think this tutorial is still worth a browse to get 
 
 **Who are you?**
 
-We're the Open Data Institute. We work with companies and governments to build an open, trustworthy data ecosystem. Anonymisation and synthetic data are some of the many, many ways we can responsbily increase access to data. If you want to learn more, [check out our site](http://theodi.org).
+We're the Open Data Institute. We work with companies and governments to build an open, trustworthy data ecosystem. Anonymisation and synthetic data are some of the many, many ways we can responsibly increase access to data. If you want to learn more, [check out our site](http://theodi.org).
 
 **Why did you make this?**
 
-We have an [R&D programme](https://theodi.org/project/data-innovation-for-uk-research-and-development/) that has a number of projects looking in to how to support innovation, improve data infrastructure and encourage ethical data sharing. One of our projects is about [managing the risks of re-identification](https://theodi.org/project/rd-broaden-access-to-personal-data-while-protecting-privacy-and-creating-a-fair-market/) in shared and open data. As you can see in the *Key outputs* section, we have other material from the project, but we thought it'd be good to have something specifically aimed at programmmers who are interested in learning by doing.
+We have an [R&D program](https://theodi.org/project/data-innovation-for-uk-research-and-development/) that has a number of projects looking in to how to support innovation, improve data infrastructure and encourage ethical data sharing. One of our projects is about [managing the risks of re-identification](https://theodi.org/project/rd-broaden-access-to-personal-data-while-protecting-privacy-and-creating-a-fair-market/) in shared and open data. As you can see in the *Key outputs* section, we have other material from the project, but we thought it'd be good to have something specifically aimed at programmers who are interested in learning by doing.
 
 **Speaking of which, can I just get to the tutorial now?**
 
@@ -61,7 +61,7 @@ First, make sure you have [Python3 installed](https://www.python.org/downloads/)
 
 Download this repository either as a zip or using Git.
 
-Change direcory in to the repo, install a virtualenv and install the dependent libaries.
+Change directory in to the repo, install a _virtualenv_ and install the dependent libraries.
 
 ```bash
 cd /path/to/repo/synthetic_data_tutorial/
@@ -113,7 +113,7 @@ Because of this, we'll need to take some de-identification steps.
 
 For this stage, we're going to be loosely following the de-identification techniques used which NHS England describe in a blog post about [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
-If you look in `tutorial/deidentify.py` you'll see the full code of all deidentification steps. You can run this code easily.
+If you look in `tutorial/deidentify.py` you'll see the full code of all de-identification steps. You can run this code easily.
 
 ```python
 python tutorial/deidentify.py
@@ -276,7 +276,7 @@ hospital_ae_df.to_csv(filepaths.hospital_ae_data_deidentify, index=False)
 
 ---
 
-## Synthesising
+## Synthesise
 
 Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data all the way to carrying nearly all of the statistical patterns of the original dataset.
 
@@ -288,7 +288,7 @@ In this tutorial we'll create not one, not two, but *three* synthetic datasets, 
 
 As described in the introduction, this is an open-source toolkit for generating synthetic data. And I'd like to lavish much praise on the researchers who made it as it's excellent.
 
-Instead of explaing it myself, I'll use the researchers' own words from their paper:
+Instead of explaining it myself, I'll use the researchers' own words from their paper:
 
 > DataSynthesizer infers the domain of each attribute and derives a description of the distribution of attribute values in the private dataset. This information is saved in a dataset description file, to which we refer as data summary. Then DataSynthesizer is able to generate synthetic datasets of arbitrary size by sampling from the probabilistic model in the dataset description file.
 
@@ -349,14 +349,10 @@ attribute_is_categorical = {
 We'll be feeding these in to a `DataDescriber` instance.
 
 ```python
-describer = DataDescriber(category_threshold=category_threshold)
+describer = DataDescriber()
 ```
 
-> DataDescriber has a parameter categorical threshold that defaults to 10 and represents the maximum number of distinct values for a categorical attribute.
-
-
-
-Using `describer` instance, we create a description file, specificying where the data is and its attritube types.
+Using this `describer` instance, feeding in the attribute descriptions, we create a description file.
 
 ```python
 describer.describe_dataset_in_random_mode(
@@ -369,13 +365,13 @@ You can see an example description file in `data/hospital_ae_description_random.
 
 #### Data Generation: Random
 
-Next generate the random data. We'll just generate the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
+Next, generate the random data. We'll just generate the same amount of rows as was in the original data but, importantly, we could generate much more or less if we wanted to.
 
 ```python
 num_rows = len(hospital_ae_df)
 ```
 
-Now generate the random data
+Now generate the random data.
 
 ```python
 generator = DataGenerator()
@@ -383,6 +379,8 @@ generator.generate_dataset_in_random_mode(
     num_rows, filepaths.hospital_ae_description_random)
 generator.save_synthetic_data(filepaths.hospital_ae_data_synthetic_random)
 ```
+
+You can view this random synthetic data in the file `data/hospital_ae_data_synthetic_random.csv`.
 
 #### Attribute Comparison: Random
 
@@ -451,7 +449,7 @@ generator.save_synthetic_data(synthetic_data_filepath)
 
 #### Attribute Comparison: Independent
 
-Comparing the attibute histograms we see the independent mode captures the distributions pretty accurately. You can see the synthetic data is _mostly_ similar but not exactly.
+Comparing the attribute histograms we see the independent mode captures the distributions pretty accurately. You can see the synthetic data is _mostly_ similar but not exactly.
 
 ```python
 synthetic_df = pd.read_csv(synthetic_data_filepath)
