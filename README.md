@@ -320,7 +320,7 @@ In this case, we can just generate the data at random using the `generate_datase
 
 #### Data Description: Random
 
-The first step is to create a description of the data, defining the datatypes and which are the categorical variables. DataSynthetizer asks that we specific the datatypes of each attribute and also whether they're categorical data or not.
+The first step is to create a description of the data, defining the datatypes and which are the categorical variables.
 
 ```python
 attribute_to_datatype = {
@@ -346,7 +346,12 @@ attribute_is_categorical = {
 }
 ```
 
-Then create a description file, specificying where the data is and its attritube types.
+We'll be feeding these in to a `DataDescriber` instance.
+
+```python
+```
+
+Using this, we create a description file, specificying where the data is and its attritube types.
 
 ```python
 describer.describe_dataset_in_random_mode(

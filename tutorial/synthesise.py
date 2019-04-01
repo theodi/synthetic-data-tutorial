@@ -19,7 +19,6 @@ from lib.utils import read_json_file
 
 
 attribute_to_datatype = {
-    # 'Attendance ID': 'String', 
     'Time in A&E (mins)': 'Integer', 
     'Treatment': 'String', 
     'Gender': 'String', 
@@ -31,7 +30,6 @@ attribute_to_datatype = {
 }
 
 attribute_is_categorical = {
-    # 'Attendance ID': False, 
     'Time in A&E (mins)': False, 
     'Treatment': True, 
     'Gender': True, 

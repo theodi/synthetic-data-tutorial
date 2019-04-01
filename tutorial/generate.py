@@ -33,9 +33,6 @@ def main():
 
     hospital_ae_dataset = {}
 
-    # print('generating A&E admission IDs...')
-    # hospital_ae_dataset['Attendance ID'] = generate_admission_ids()
-
     print('generating Health Service ID numbers...')
     hospital_ae_dataset['Health Service ID'] = generate_health_service_id_numbers()
 
