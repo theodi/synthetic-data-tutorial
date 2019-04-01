@@ -61,7 +61,6 @@ def main():
 
     # "_df" is the usual way people refer to a Pandas DataFrame object
     hospital_ae_df = pd.read_csv(filepaths.hospital_ae_data_deidentify)
-    category_threshold = hospital_ae_df['Treatment'].nunique()
 
     # let's generate the same amount of rows as original data (though we don't have to)
     num_rows = len(hospital_ae_df)
@@ -70,11 +69,7 @@ def main():
     for mode in ['random','independent', 'correlated']: 
 
         print('describing synthetic data for', mode, 'mode...')
-        describe_synthetic_data(
-                mode, 
-                category_threshold, 
-                mode_filepaths[mode]['description']
-        )
+        describe_synthetic_data(mode, mode_filepaths[mode]['description'])
 
         print('generating synthetic data for', mode, 'mode...')
         generate_synthetic_data(
@@ -104,8 +99,7 @@ def main():
     print('done in ' + str(elapsed) + ' seconds.')
 
 
-def describe_synthetic_data(
-        mode: str, category_threshold: int, description_filepath:str):
+def describe_synthetic_data(mode: str, description_filepath:str):
     '''
     Describes the synthetic data and saves it to the data/ directory.
 
@@ -114,7 +108,7 @@ def describe_synthetic_data(
     category_threshold -- limit at which categories are considered blah
     description_filepath -- filepath to the data description
     '''
-    describer = DataDescriber(category_threshold=category_threshold)
+    describer = DataDescriber()
 
     if mode == 'random':
         describer.describe_dataset_in_random_mode(

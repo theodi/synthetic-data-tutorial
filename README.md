@@ -349,9 +349,14 @@ attribute_is_categorical = {
 We'll be feeding these in to a `DataDescriber` instance.
 
 ```python
+describer = DataDescriber(category_threshold=category_threshold)
 ```
 
-Using this, we create a description file, specificying where the data is and its attritube types.
+> DataDescriber has a parameter categorical threshold that defaults to 10 and represents the maximum number of distinct values for a categorical attribute.
+
+
+
+Using `describer` instance, we create a description file, specificying where the data is and its attritube types.
 
 ```python
 describer.describe_dataset_in_random_mode(
