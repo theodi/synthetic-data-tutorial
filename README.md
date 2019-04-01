@@ -278,41 +278,49 @@ hospital_ae_df.to_csv(filepaths.hospital_ae_data_deidentify, index=False)
 
 ## Synthesising
 
-Now we've gotten to the stage where we'll create a synthetic version of our data.
-
 Synthetic data exists on a spectrum from merely the same columns and datatypes as the original data all the way to carrying nearly all of the statistical patterns of the original dataset.
 
-The UK's Office of National Statistics has a great report on synthetic data, and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining this the nuances in this in more detail.
+The UK's Office of National Statistics has a great report on synthetic data and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining the nuances in more detail.
 
-For us though, we'll create three types of synthetic data.
-
-1. Random – the attributes names and datatypes are kept but the values are random and have no relation to the patterns in the original data.
-2. Independent – the attribute names and datatypes are kept, the distributions of each attribute are similar but there is no correlation info kept between attributes.  
-3. Correlated – Correlation info is kept in along with attirbute names and datatypes.
+In this tutorial we'll create not one, not two, but *three* synthetic datasets, that are on a range across the synthetic data spectrum. To do this we'll be using the DataSynthetizer toolkit.
 
 ### DataSynthesizer
 
-As described above, this is an open source toolkit for generating synthetic data. We'll be using it here to create our three synthetic datasets.
+As described in the introduction, this is an open-source toolkit for generating synthetic data. And I'd like to lavish much praise on the researchers who made it as it's excellent.
 
-We'll use the creators very own description of the different parts of DataSynthetizer.
+Instead of explaing it myself, I'll use the researchers' own words from their paper:
+
+> DataSynthesizer infers the domain of each attribute and derives a description of the distribution of attribute values in the private dataset. This information is saved in a dataset description file, to which we refer as data summary. Then DataSynthesizer is able to generate synthetic datasets of arbitrary size by sampling from the probabilistic model in the dataset description file.
+
+We'll create and inspect our synthetic datasets using three modules within it.
 
 > DataSynthesizer consists of three high-level modules:
 >
-> 1. DataDescriber: investigates the data types, correlations and distributions of the attributes in the private dataset, and produces a data summary.
-> 2. DataGenerator: samples from the summary computed by DataDescriber and outputs synthetic data
-> 3. ModelInspector: shows an intuitive description of the data summary that was computed by DataDescriber, allowing the data owner to evaluate the accuracy of.
+> 1. **DataDescriber**: investigates the data types, correlations and distributions of the attributes in the private dataset, and produces a data summary.
+> 2. **DataGenerator**: samples from the summary computed by DataDescriber and outputs synthetic data
+> 3. **ModelInspector**: shows an intuitive description of the data summary that was computed by DataDescriber, allowing the data owner to evaluate the accuracy of the summarization process and adjust any parameters, if desired.
 
-For each of three we'll run our tests we defined and observe the results. These are three modes available in Data Synthesizer toolkit.
+If you want to browse the code for each of these modules, you can find the Python classes for in the `DataSynthetizer` directory (all code in here from the [original repo](https://github.com/DataResponsibly/DataSynthesizer)).
 
-### Random mode - generate random values for this column
+The three synthetic datasets we'll be generating using DataSyntheizer are random, independent and correlated.
 
-If we were just to generate data for testing our software. We wouldn't care too much about the statistical patterns within the data. Just that it was roughly a similar size and that the datatypes and columns aligned.
+> In **correlated attribute mode**, we learn a differentially private Bayesian network capturing the correlation structure between attributes, then draw samples from this model to construct the result dataset.
+>
+> In cases where the correlated attribute mode is too computationally expensive or when there is insufficient data to derive a reasonable model, one can use **independent attribute mode**. In this mode, a histogram is derived for each attribute, noise is added to the histogram to achieve differential privacy, and then samples are drawn for each attribute.
+>
+> Finally, for cases of extremely sensitive data, one can use **random mode** that simply generates type-consistent random values for each attribute.
+
+We'll go through each of these now, moving along the synthetic data spectrum, in the order of random, independent to correlated.
+
+### Random mode
+
+If we were just to generate A&E data for testing our software, we wouldn't care too much about the statistical patterns within the data. Just that it was roughly a similar size and that the datatypes and columns aligned.
 
 In this case, we can just generate the data at random using the `generate_dataset_in_random_mode` function within the `DataGenerator` class.
 
 #### Data Description: Random
 
-The first step is to create a description of the data, defining the datatypes and which are the categorical variables.
+The first step is to create a description of the data, defining the datatypes and which are the categorical variables. DataSynthetizer asks that we specific the datatypes of each attribute and also whether they're categorical data or not.
 
 ```python
 attribute_to_datatype = {
