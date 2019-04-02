@@ -499,16 +499,21 @@ If we want to capture correlated variables, for instance if patient is related t
 
 #### Data Description: Correlated
 
+There's a couple of parameters that are different here so we'll explain them.
+
+`epsilon` is a value for DataSynthesizer's differential privacy which says the amount of noise to add to the data - the higher the value, the more noise and therefore more privacy. We're not using differential privacy so we can set it to zero.
+
+`k` is the maximum number of parents in a Bayesian network, i.e., the maximum number of incoming edges. For simplicity's sake, we're going to set this to 1, saying that for a variable only one other variable can influence it.
+
 ```python
 describer.describe_dataset_in_correlated_attribute_mode(
     dataset_file=filepaths.hospital_ae_data_deidentify,
-    epsilon=epsilon,
-    k=degree_of_bayesian_network,
+    epsilon=0,
+    k=1,
     attribute_to_datatype=attribute_to_datatype,
     attribute_to_is_categorical=attribute_is_categorical)
 
-describer.save_dataset_description_to_file(
-    filepaths.hospital_ae_description_correlated)
+describer.save_dataset_description_to_file(filepaths.hospital_ae_description_correlated)
 ```
 
 #### Data Generation: Correlated
