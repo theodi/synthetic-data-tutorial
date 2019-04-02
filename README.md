@@ -140,7 +140,7 @@ hospital_ae_df = hospital_ae_df.drop('Health Service ID', 1)
 
 ### Where a patient lives
 
-Pseudo-indentifiers, also known as [quasi-identifiers](https://en.wikipedia.org/wiki/Quasi-identifier), are pieces of information that don't directly identify people but can used with other information to identify a person. If we were to take the age, postcode and gender of a person we could combine these and check the dataset to see what that person was treated for in A&E.
+Pseudo-identifiers, also known as [quasi-identifiers](https://en.wikipedia.org/wiki/Quasi-identifier), are pieces of information that don't directly identify people but can used with other information to identify a person. If we were to take the age, postcode and gender of a person we could combine these and check the dataset to see what that person was treated for in A&E.
 
 The data scientist from NHS England, Jonathan Pearson, describes this in the blog post:
 
@@ -165,10 +165,7 @@ Then we'll add a mapped column of "Index of Multiple Deprivation" column for eac
 ```python
 hospital_ae_df = pd.merge(
     hospital_ae_df,
-    postcodes_df[
-        ['Lower layer super output area',
-            'Index of Multiple Deprivation']
-    ].drop_duplicates(),
+    postcodes_df[['Lower layer super output area', 'Index of Multiple Deprivation']].drop_duplicates(),
     on='Lower layer super output area'
 )
 ```
@@ -177,17 +174,22 @@ Next calculate the decile bins for the IMDs by taking all the IMDs from large li
 
 ```python
 _, bins = pd.qcut(
-    postcodes_df['Index of Multiple Deprivation'], 10,
-    retbins=True, labels=False
+    postcodes_df['Index of Multiple Deprivation'],
+    10,
+    retbins=True,
+    labels=False
 )
 ```
 
 Then we'll use those decile `bins` to map each row's IMD to its IMD decile.
 
 ```python
+# add +1 to get deciles from 1 to 10 (not 0 to 9)
 hospital_ae_df['Index of Multiple Deprivation Decile'] = pd.cut(
-    hospital_ae_df['Index of Multiple Deprivation'], bins=bins,
-    labels=False, include_lowest=True) + 1
+    hospital_ae_df['Index of Multiple Deprivation'],
+    bins=bins,
+    labels=False,
+    include_lowest=True) + 1
 ```
 
 And finally drop the columns we no longer need.
@@ -251,9 +253,7 @@ hospital_ae_df = hospital_ae_df.drop('Arrival Hour', 1)
 > I decided to only include records with a sex of male or female in order to reduce risk of re identification through low numbers.
 
 ```python
-hospital_ae_df = hospital_ae_df[
-        hospital_ae_df['Gender'].isin(['Male', 'Female'])
-    ]
+hospital_ae_df = hospital_ae_df[hospital_ae_df['Gender'].isin(['Male', 'Female'])]
 ```
 
 > For the patients age it is common practice to group these into bands and so I've used a standard set - 1-17, 18-24, 25-44, 45-64, 65-84, and 85+ - which although are non-uniform are well used segments defining different average health care usage.
@@ -302,7 +302,7 @@ We'll create and inspect our synthetic datasets using three modules within it.
 
 If you want to browse the code for each of these modules, you can find the Python classes for in the `DataSynthetizer` directory (all code in here from the [original repo](https://github.com/DataResponsibly/DataSynthesizer)).
 
-The three synthetic datasets we'll be generating using DataSyntheizer are random, independent and correlated.
+The three synthetic datasets we'll be generating using DataSyntheizer are *random*, *independent* and *correlated*.
 
 > In **correlated attribute mode**, we learn a differentially private Bayesian network capturing the correlation structure between attributes, then draw samples from this model to construct the result dataset.
 >
@@ -310,7 +310,19 @@ The three synthetic datasets we'll be generating using DataSyntheizer are random
 >
 > Finally, for cases of extremely sensitive data, one can use **random mode** that simply generates type-consistent random values for each attribute.
 
-We'll go through each of these now, moving along the synthetic data spectrum, in the order of random, independent to correlated.
+We'll go through each of these now, moving along the synthetic data spectrum, in the order of random to independent to correlated.
+
+But just before that...
+
+### A brief aside about differential privacy and Bayesian networks
+
+You might have seen the phrase "differentially private Bayesian network" in the *correlated mode* description and got slightly panicked. But fear not! You don't need to worry *too* much about these to get DataSynthesizer working.
+
+First off, while DataSynthesizer has the option of using differential privacy for anonymisation, we are turning it off and won't be using it in this tutorial. So you can ignore that part. However, if you care about anonymisation you really should read up on differential privacy. I've read a lot of explainers on it and the best I found was [this article from Access Now](https://www.accessnow.org/understanding-differential-privacy-matters-digital-rights/).
+
+Now the next term, Bayesian networks. These are directed connected graphs which model the statistical relationship between the variables. It does this by saying certain variables are "parents" of others, that is, their value influences their "children" variables. Parent variables can influence children but children can't influence parents. In our case, if patient age is a parent of waiting time, it means the age of patient influences how long they wait, but how long they doesn't influence their age. So by using Bayesian Networks, DataSynthesizer can model these influences and use this model in generating the synthetic data.
+
+It can be a slightly tricky topic to grasp but a nice, introductory tutorial on them is at the [Probabilistic World site](https://www.probabilisticworld.com/bayesian-belief-networks-part-1/). Give it a read.
 
 ### Random mode
 
@@ -412,7 +424,7 @@ Let's look at the histogram plots now for a few of the attributes. We can see th
 *Comparison of arrival date in original data (left) and random synthetic data (right)*
 ![Random mode age bracket histograms](plots/random_Arrival_Date.png)
 
-You can see more comparison examples in the `/plots` directory. 
+You can see more comparison examples in the `/plots` directory.
 
 #### Compare pairwise mutual information: Random
 
@@ -483,9 +495,7 @@ No correlations.
 
 ### Correlated attribute mode - include correlations between columns in the data
 
-If we want to capture correlated variables, for instance if the number of old people attending a certain hospital and the waiting times were all related, we'll need correlated data. To do this we use *correlated mode*.
-
-To understand how it works we need to understand Bayesian networks. These are graphs that show the dependency between different variables. You can read a very good tutorial on them at the [Probabilistic World site](https://www.probabilisticworld.com/bayesian-belief-networks-part-1/).
+If we want to capture correlated variables, for instance if patient is related to waiting times, we'll need correlated data. To do this we use *correlated mode*.
 
 #### Data Description: Correlated
 
