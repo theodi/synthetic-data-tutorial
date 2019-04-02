@@ -314,7 +314,7 @@ We'll go through each of these now, moving along the synthetic data spectrum, in
 
 But just before that...
 
-### A brief aside about differential privacy and Bayesian networks
+### An aside about differential privacy and Bayesian networks
 
 You might have seen the phrase "differentially private Bayesian network" in the *correlated mode* description and got slightly panicked. But fear not! You don't need to worry *too* much about these to get DataSynthesizer working.
 
@@ -491,7 +491,7 @@ for attribute in synthetic_df.columns:
 No correlations.
 
 *Mutual Information Heatmap in original data (left) and independent synthetic data (right)*
-![Independent mode mutual information](plots/mutual_information_heatmap_indepdendent.png)
+![Independent mode mutual information](plots/mutual_information_heatmap_independent.png)
 
 ### Correlated attribute mode - include correlations between columns in the data
 
