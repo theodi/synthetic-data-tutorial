@@ -75,7 +75,7 @@ def generate_ages_times_in_age() -> (list, list):
 
     # Standard deviations/means of ages and waiting times, respectively
     stdev = np.array([20, 20])
-    mean = np.array([45, 60])
+    mean = np.array([41, 60])
     cov = corr2cov(correlations, stdev)
 
     data = np.random.multivariate_normal(mean=mean, cov=cov, size=num_of_rows)

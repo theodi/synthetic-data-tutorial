@@ -93,14 +93,13 @@ python tutorial/generate.py
 
 Voila! You'll now see a new `hospital_ae_data.csv` file in the `/data` directory. Open it up and have a browse. It's contains the following columns:
 
-- **Attendance ID**: a unique ID generated for every admission to A&E
 - **Health Service ID**: NHS number of the admitted patient  
+- **Age**: age of patient
+- **Time in A&E (mins)**: time in minutes of how long the patient spent in A&E. This is generated to correlate with the age of the patient.
 - **Hospital**: which hospital admitted the patient - with some hospitals being more prevalent in the data than others
 - **Arrival Time**: what time and date the patient was admitted - with weekends as busier and and a different peak time for each day
-- **Time in A&E (mins)**: time in minutes of how long the patient spent in A&E
 - **Treatment**: what the person was treated for - with certain treatments being more common than others
 - **Gender**: patient gender - based on [NHS patient gender codes](https://www.datadictionary.nhs.uk/data_dictionary/attributes/p/person/person_gender_code_de.asp?shownav=1)
-- **Age**: age of patient - following age distribution roughly similar to London
 - **Postcode**: postcode of patient - random, in use, London postcodes extracted from the `London postcodes.csv` file.
 
 We can see this dataset obviously contains some personal information. For instance, if we knew roughly the time a neighbour went to A&E we could use their postcode to figure out exactly what ailment they went in with. Or, if a list of people's Health Service ID's were to be leaked in future, lots of people could be re-identified.
@@ -400,8 +399,10 @@ You can view this random synthetic data in the file `data/hospital_ae_data_synth
 
 We'll compare each attribute in the original data to the synthetic data by generating plots of histograms using the `ModelInspector` class.
 
+`figure_filepath` is just a variable holding where we'll write the plot out to.
+
 ```python
-synthetic_df = pd.read_csv(synthetic_data_filepath)
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_random)
 
 # Read attribute description from the dataset description file.
 attribute_description = read_json_file(
@@ -428,9 +429,20 @@ You can see more comparison examples in the `/plots` directory.
 
 #### Compare pairwise mutual information: Random
 
-**WORK IN PROGRESS**
+DataSynthesizer has a function to compare the _mutual information_ between each of the variables in the dataset and plot them. We'll avoid the mathematical definition of mutual information but [Scholarpedia notes](http://www.scholarpedia.org/article/Mutual_information) it:
 
-No correlations.
+> can be thought of as the reduction in uncertainty about one random variable given knowledge of another.
+
+To create this plot we run.
+
+```python
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_random)
+
+inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+inspector.mutual_information_heatmap(figure_filepath)
+```
+
+We can see the original, private data has a correlation between `Age bracket` and `Time in A&E (mins)`. Not surprisingly, this correlation is lost when we generate our random data.
 
 *Mutual Information Heatmap in original data (left) and random synthetic data (right)*
 ![Random mode age mutual information](plots/mutual_information_heatmap_random.png)
@@ -466,7 +478,7 @@ generator.save_synthetic_data(
 Comparing the attribute histograms we see the independent mode captures the distributions pretty accurately. You can see the synthetic data is _mostly_ similar but not exactly.
 
 ```python
-synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_random)
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_independent)
 attribute_description = read_json_file(
     filepaths.hospital_ae_description_random)['attribute_description']
 inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
@@ -486,9 +498,14 @@ for attribute in synthetic_df.columns:
 
 #### Compare pairwise mutual information: Independent
 
-**WORK IN PROGRESS**
+```python
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_independent)
 
-No correlations.
+inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+inspector.mutual_information_heatmap(figure_filepath)
+```
+
+We can see the independent data also does not contain any of the attribute correlations from the original data.
 
 *Mutual Information Heatmap in original data (left) and independent synthetic data (right)*
 ![Independent mode mutual information](plots/mutual_information_heatmap_independent.png)
@@ -539,9 +556,14 @@ We can see correlated mode keeps similar distributions also. It looks the exact 
 
 #### Compare pairwise mutual information: Correlated
 
-**WORK IN PROGRESS**
+Finally, we see in correlated mode, we manage to capture the correlation between `Age bracket` and `Time in A&E (mins)`.
 
-Correlations.
+```python
+synthetic_df = pd.read_csv(filepaths.hospital_ae_data_synthetic_correlated)
+
+inspector = ModelInspector(hospital_ae_df, synthetic_df, attribute_description)
+inspector.mutual_information_heatmap(figure_filepath)
+```
 
 *Mutual Information Heatmap in original data (left) and correlated synthetic data (right)*
 ![Independent mode mutual information](plots/mutual_information_heatmap_correlated.png)
@@ -561,4 +583,4 @@ If you have any queries, comments or improvements about this tutorial please do 
 - [DataSynthesizer: Privacy-Preserving Synthetic Datasets](https://faculty.washington.edu/billhowe/publications/pdfs/ping17datasynthesizer.pdf) Haoyue Ping, Julia Stoyanovich, and Bill Howe. 2017
 - [ONS methodology working paper series number 16 - Synthetic data pilot](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot) - Office of National Statistics, 2019.
 - [Wrap-up blog post](http://theodi.org) (not yet published) from our anonymisation project which talks about what we learned and other outputs we created.
-- We referred to the [UK Anonymisation Network's Decision Making Framework](https://ukanon.net/ukan-resources/ukan-decision-making-framework/) a lot during our work. There's a lot in it but it's excellent as a deep-dive resource on anonymisation.
+- We referred to the [UK Anonymisation Network's Decision Making Framework](https://ukanon.net/ukan-resources/ukan-decision-making-framework/) a lot during our work. It's pretty involved but it's excellent as a deep-dive resource on anonymisation.
