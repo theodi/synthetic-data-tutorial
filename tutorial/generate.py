@@ -21,7 +21,6 @@ from scipy.stats import norm
 
 import filepaths
 
-# TODO: add correlations between attributes
 # TODO: give hospitals different average waiting times
 
 num_of_rows = 10000
@@ -36,17 +35,14 @@ def main():
     print('generating Health Service ID numbers...')
     hospital_ae_dataset['Health Service ID'] = generate_health_service_id_numbers()
 
-    print('generating patient ages...')
-    hospital_ae_dataset['Age'] = generates_ages()
+    print('generating patient ages and times in A&E...')
+    (hospital_ae_dataset['Age'], hospital_ae_dataset['Time in A&E (mins)']) = generate_ages_times_in_age()
 
     print('generating hospital instances...')
     hospital_ae_dataset['Hospital'] = generate_hospitals()
 
     print('generating arrival times...')
     hospital_ae_dataset['Arrival Time'] = generate_arrival_times()
-
-    print('generating times spent in A&E...')
-    hospital_ae_dataset['Time in A&E (mins)'] = generate_times_in_ae(hospital_ae_dataset['Age'])
 
     print('generating A&E treaments...')
     hospital_ae_dataset['Treatment'] = generate_treatments()
@@ -62,6 +58,45 @@ def main():
 
     elapsed = round(time.time() - start, 2)
     print('done in ' + str(elapsed) + ' seconds.')
+
+
+def generate_ages_times_in_age() -> (list, list):
+    """
+    Generates correlated ages and waiting times and returns them as lists
+
+    Obviously normally distributed ages is not very true to real life but is fine for our mock data.
+
+    Correlated random data generation code based on:
+    https://realpython.com/python-random/
+    """
+    # Start with a correlation matrix and standard deviations.
+    # 0.9 is the correlation between ages and waiting times, and the correlation of a variable with itself is 1
+    correlations = np.array([[1, 0.95], [0.95, 1]])
+
+    # Standard deviations/means of ages and waiting times, respectively
+    stdev = np.array([20, 20])
+    mean = np.array([45, 60])
+    cov = corr2cov(correlations, stdev)
+
+    data = np.random.multivariate_normal(mean=mean, cov=cov, size=num_of_rows)
+    data = np.array(data, dtype=int)
+
+    # negative ages or waiting times wouldn't make sense
+    # so set any negative values to 0 and 1 respectively 
+    data[np.nonzero(data[:, 0] < 1)[0], 0] = 0
+    data[np.nonzero(data[:, 1] < 1)[0], 1] = 1
+
+    ages = data[:, 0].tolist()
+    times_in_ae = data[:, 1].tolist()
+
+    return (ages, times_in_ae)
+
+
+def corr2cov(correlations: np.ndarray, stdev: np.ndarray) -> np.ndarray:
+    """Covariance matrix from correlation & standard deviations"""
+    diagonal_stdev = np.diag(stdev)
+    covariance = diagonal_stdev @ correlations @ diagonal_stdev
+    return covariance
 
 
 def generate_admission_ids() -> list:
@@ -140,21 +175,6 @@ def generate_arrival_times() -> list:
     return arrival_times
 
 
-def generate_times_in_ae(ages) -> list:
-    """ Generate and return length of times in A&E.
-    Method included tries to get a good spread around the mean without
-    going below 1 minute or above 720 minutes (chosen arbitrarily).
-    """
-    lower, upper = 10, 720
-    mu, sigma = 30, 100
-    # Normal distribution with upper and lower limits solution from stackoverflow
-    # https://stackoverflow.com/questions/18441779/how-to-specify-upper-and-lower-limits-when-using-numpy-random-normal/44603019
-    X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-    times_in_ae = X.rvs(num_of_rows).astype(int)
-
-    return times_in_ae
-
-
 def generate_genders() -> list:
     """ Generate and return list of genders for every row. 
 
@@ -169,37 +189,6 @@ def generate_genders() -> list:
     return gender_codes
 
 
-def generates_ages() -> list:
-    """ Generate and return sample of ages 
-
-    Reads London age distribution file, generates ages based on those (max 100),
-    returns the list. 
-
-    # London population age groups populations based on 2011 census:
-    # https://data.london.gov.uk/dataset/census-2011-population-age-uk-districts
-    """
-
-    age_population_london_df = pd.read_csv(filepaths.age_population_london)
-    weights = age_population_london_df['Population'].tolist()
-    age_brackets_start = [
-        int(age_bracket.split('-')[0]) 
-        for age_bracket in
-        age_population_london_df['Age bracket'].tolist()
-    ]
-    age_brackets = random.choices(
-        age_brackets_start, k=num_of_rows, weights=weights)
-    ages = [generate_age(age_bracket) for age_bracket in age_brackets]
-    return ages
-
-
-def generate_age(age: int) -> int:
-    if age == 90: 
-        # max age of 100, not exactly accurate but good enough for example purposes
-        return random.randint(90, 100) 
-    else:
-        return random.randint(age, age+4)
-
-
 def generate_treatments() -> list:
     """ Generate and return sample of treatments patients received. 
 
@@ -212,7 +201,7 @@ def generate_treatments() -> list:
     treatment_codes_df = pd.read_csv(filepaths.nhs_ae_treatment_codes)
     treatments = treatment_codes_df['Treatment'].tolist()
 
-    # likelihood each of the treatments - make some more common ones
+    # likelihood of each of the treatments - make some more common
     weights = random.choices(range(1, 100), k=len(treatments))
     treatment_codes = random.choices(
         treatments, k=num_of_rows, weights=weights)
