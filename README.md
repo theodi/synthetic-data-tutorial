@@ -77,15 +77,17 @@ There's small differences between the code presented here and what's in the Pyth
 
 ## Generate mock NHS A&E dataset
 
-The data already exists in `data/nhs_ae_mock.csv` so feel free to browse that. But you should generate your own fresh dataset using the `tutorial/generate.py` script. To do this, you'll need to download one dataset first. It's a list of all postcodes in London. You can find it at this page on [doogal.co.uk](https://www.doogal.co.uk/PostcodeDownloads.php), at the _London_ link under the _By English region_ section. Or just download it directly at [this link](https://www.doogal.co.uk/UKPostcodesCSV.ashx?region=E12000007) (just take note, it's 133MB in size).
+The data already exists in `data/nhs_ae_mock.csv` so feel free to browse that. But you should generate your own fresh dataset using the `tutorial/generate.py` script.
 
-Then place the `London postcodes.csv` file in to the `synthetic-data-tutorial/data` directory.
+To do this, you'll need to download one dataset first. It's a list of all postcodes in London. You can find it at this page on [doogal.co.uk](https://www.doogal.co.uk/PostcodeDownloads.php), at the _London_ link under the _By English region_ section. Or just download it directly at [this link](https://www.doogal.co.uk/UKPostcodesCSV.ashx?region=E12000007) (just take note, it's 133MB in size), then place the `London postcodes.csv` file in to the `data/` directory.
+
+Or you can just do it using `curl`.
 
 ```bash
-mv "/path/to/dataset/London postcodes" /path/to/repo/synthetic-data-tutorial/data
+curl -o "./data/London postcodes.csv" https://www.doogal.co.uk/UKPostcodesCSV.ashx?region=E12000007
 ```
 
-Next simply go to the project root directory and run the `generate.py` script.
+Then, to generate the data, from the project root directory run the `generate.py` script.
 
 ```bash
 python tutorial/generate.py
