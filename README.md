@@ -61,7 +61,7 @@ First, make sure you have [Python3 installed](https://www.python.org/downloads/)
 
 Download this repository either as a zip or using Git.
 
-Change directory in to the repo, install a _virtualenv_ and install the dependent libraries.
+Install required dependent libraries. You can do that, for example, with a _virtualenv_.
 
 ```bash
 cd /path/to/repo/synthetic_data_tutorial/
