@@ -32,7 +32,7 @@ Sure! Let's go.
 
 ## Overview
 
-In this tutorial you are aiming to create a safe version of accident and emergency (A&E) data collected from multiple hospitals. This data contains some sensitive personal information about people's health and can't be openly shared. By removing and altering certain identifying information in the data we can greatly reduce the risk that patients can be re-identified and therefore hope to release the data.
+In this tutorial you are aiming to create a safe version of accident and emergency (A&E) admissions data, collected from multiple hospitals. This data contains some sensitive personal information about people's health and can't be openly shared. By removing and altering certain identifying information in the data we can greatly reduce the risk that patients can be re-identified and therefore hope to release the data.
 
 Just to be clear, we're not using actual A&E data but are creating our own simple, mock, version of it.
 
