@@ -49,7 +49,7 @@ Not exactly. Patterns picked up in the original data can be transferred to the s
 
 ## Credit to others
 
-This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in to creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data.
+This tutorial is inspired by the [NHS England and ODI Leeds' research](https://odileeds.org/events/synae/) in creating a synthetic dataset from NHS England's accident and emergency admissions. Please do read about their project, as it's really interesting and great for learning about the benefits and risks in creating synthetic data.
 
 Also, the synthetic data generating library we use is [DataSynthetizer](https://homes.cs.washington.edu/~billhowe//projects/2017/07/20/Data-Synthesizer.html) and comes as part of this codebase. Coming from researchers in Drexel University and University of Washington, it's an excellent piece of software and their research and papers are well worth checking out. It's available as a [repo on Github](https://github.com/DataResponsibly/DataSynthesizer) which includes some short tutorials on how to use the toolkit and an accompanying research paper describing the theory behind it.
 
@@ -71,7 +71,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Next we'll go through how to create, de-identify and synthesis the code. We'll show this using code snippets but the full code is contained within the `/tutorial` directory.
+Next we'll go through how to create, de-identify and synthesise the code. We'll show this using code snippets but the full code is contained within the `/tutorial` directory.
 
 There's small differences between the code presented here and what's in the Python scripts but it's mostly down to variable naming. I'd encourage you to run, edit and play with the code locally.
 
@@ -112,7 +112,7 @@ Because of this, we'll need to take some de-identification steps.
 
 ## De-identification
 
-For this stage, we're going to be loosely following the de-identification techniques used which NHS England describe in a blog post about [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
+For this stage, we're going to be loosely following the de-identification techniques used by Jonathan Pearson of NHS England, and described in a blog post about [creating its own synthetic data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data).
 
 If you look in `tutorial/deidentify.py` you'll see the full code of all de-identification steps. You can run this code easily.
 
@@ -283,7 +283,17 @@ Synthetic data exists on a spectrum from merely the same columns and datatypes a
 
 The UK's Office of National Statistics has a great report on synthetic data and the [_Synthetic Data Spectrum_](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot?utm_campaign=201903_UK_DataPolicyNetwork&utm_source=hs_email&utm_medium=email&utm_content=70377606&_hsenc=p2ANqtz-9W6ByBext_HsgkTPG1lw2JJ_utRoJSTIeVC5Z2lz3QkzwFQpZ0dp2ns9SZLPqxLJrgWzsjC_zt7FQcBvtIGoeSjZtwNg&_hsmi=70377606#synthetic-dataset-spectrum) section is very good in explaining the nuances in more detail.
 
-In this tutorial we'll create not one, not two, but *three* synthetic datasets, that are on a range across the synthetic data spectrum. To do this we'll be using the DataSynthetizer toolkit.
+In this tutorial we'll create not one, not two, but *three* synthetic datasets, that are on a range across the synthetic data spectrum: *Random*, *Independent* and *Correlated*.
+
+> In **correlated attribute mode**, we learn a differentially private Bayesian network capturing the correlation structure between attributes, then draw samples from this model to construct the result dataset.
+>
+> In cases where the correlated attribute mode is too computationally expensive or when there is insufficient data to derive a reasonable model, one can use **independent attribute mode**. In this mode, a histogram is derived for each attribute, noise is added to the histogram to achieve differential privacy, and then samples are drawn for each attribute.
+>
+> Finally, for cases of extremely sensitive data, one can use **random mode** that simply generates type-consistent random values for each attribute.
+
+We'll go through each of these now, moving along the synthetic data spectrum, in the order of random to independent to correlated.
+
+The toolkit we will be using to generate the three synthetic datasets is DataSynthetizer.
 
 ### DataSynthesizer
 
@@ -303,21 +313,10 @@ We'll create and inspect our synthetic datasets using three modules within it.
 
 If you want to browse the code for each of these modules, you can find the Python classes for in the `DataSynthetizer` directory (all code in here from the [original repo](https://github.com/DataResponsibly/DataSynthesizer)).
 
-The three synthetic datasets we'll be generating using DataSyntheizer are *random*, *independent* and *correlated*.
-
-> In **correlated attribute mode**, we learn a differentially private Bayesian network capturing the correlation structure between attributes, then draw samples from this model to construct the result dataset.
->
-> In cases where the correlated attribute mode is too computationally expensive or when there is insufficient data to derive a reasonable model, one can use **independent attribute mode**. In this mode, a histogram is derived for each attribute, noise is added to the histogram to achieve differential privacy, and then samples are drawn for each attribute.
->
-> Finally, for cases of extremely sensitive data, one can use **random mode** that simply generates type-consistent random values for each attribute.
-
-We'll go through each of these now, moving along the synthetic data spectrum, in the order of random to independent to correlated.
-
-But just before that...
 
 ### An aside about differential privacy and Bayesian networks
 
-You might have seen the phrase "differentially private Bayesian network" in the *correlated mode* description and got slightly panicked. But fear not! You don't need to worry *too* much about these to get DataSynthesizer working.
+You might have seen the phrase "differentially private Bayesian network" in the *correlated mode* description earlier, and got slightly panicked. But fear not! You don't need to worry *too* much about these to get DataSynthesizer working.
 
 First off, while DataSynthesizer has the option of using differential privacy for anonymisation, we are turning it off and won't be using it in this tutorial. So you can ignore that part. However, if you care about anonymisation you really should read up on differential privacy. I've read a lot of explainers on it and the best I found was [this article from Access Now](https://www.accessnow.org/understanding-differential-privacy-matters-digital-rights/).
 
@@ -580,7 +579,7 @@ If you have any queries, comments or improvements about this tutorial please do 
 
 ### References
 
-- [Exploring methods for synthetic A&E data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data) - Jonathan Pearson, NHS with Open Data Institute Leeds.
+- [Exploring methods for synthetic A&E data](https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-e-data) - Jonathan Pearson, NHS England with Open Data Institute Leeds.
 - [DataSynthesizer Github Repository](https://github.com/DataResponsibly/DataSynthesizer)
 - [DataSynthesizer: Privacy-Preserving Synthetic Datasets](https://faculty.washington.edu/billhowe/publications/pdfs/ping17datasynthesizer.pdf) Haoyue Ping, Julia Stoyanovich, and Bill Howe. 2017
 - [ONS methodology working paper series number 16 - Synthetic data pilot](https://www.ons.gov.uk/methodology/methodologicalpublications/generalmethodology/onsworkingpaperseries/onsmethodologyworkingpaperseriesnumber16syntheticdatapilot) - Office of National Statistics, 2019.
