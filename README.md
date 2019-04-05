@@ -574,7 +574,7 @@ inspector.mutual_information_heatmap(figure_filepath)
 
 ### Wrap-up
 
-That's about it really. There is much, much more to the world of anonymisation and synthetic data. Please check out more in the references below.
+This is where our tutorial ends. But there is much, much more to the world of anonymisation and synthetic data. Please check out more in the references below.
 
 If you have any queries, comments or improvements about this tutorial please do get in touch. You can send me a message through Github or leave an Issue.
 
