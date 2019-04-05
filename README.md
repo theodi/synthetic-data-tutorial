@@ -116,7 +116,7 @@ For this stage, we're going to be loosely following the de-identification techni
 
 If you look in `tutorial/deidentify.py` you'll see the full code of all de-identification steps. You can run this code easily.
 
-```python
+```bash
 python tutorial/deidentify.py
 ```
 
