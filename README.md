@@ -59,15 +59,12 @@ Also, the synthetic data generating library we use is [DataSynthetizer](https://
 
 First, make sure you have [Python3 installed](https://www.python.org/downloads/). Minimum Python 3.6.
 
-Download this repository either as a zip or using Git.
+Download this repository either as a zip or clone using Git.
 
 Install required dependent libraries. You can do that, for example, with a _virtualenv_.
 
 ```bash
 cd /path/to/repo/synthetic_data_tutorial/
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
