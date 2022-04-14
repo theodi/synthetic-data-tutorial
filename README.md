@@ -1,3 +1,5 @@
+_Last tested: 2022-04-14. Updated the requirements and ran in Python 3.10 (although a few warnings from Pandas)._
+
 # Anonymisation with Synthetic Data Tutorial
 
 ## Some questions
