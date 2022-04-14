@@ -7,7 +7,6 @@ import time
 import string
 
 import pandas as pd
-import numpy as np
 
 import filepaths
 

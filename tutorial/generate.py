@@ -6,18 +6,13 @@ https://odileeds.org/blog/2019-01-24-exploring-methods-for-creating-synthetic-a-
 
 """
 
-import os
 import random
-from datetime import datetime, timedelta
-import uuid
+from datetime import datetime
 import random, string
 import time
 
 import pandas as pd
 import numpy as np
-import scipy.stats as stats
-from scipy.linalg import eigh, cholesky
-from scipy.stats import norm
 
 import filepaths
 
@@ -60,7 +55,7 @@ def main():
     print('done in ' + str(elapsed) + ' seconds.')
 
 
-def generate_ages_times_in_age() -> (list, list):
+def generate_ages_times_in_age():
     """
     Generates correlated ages and waiting times and returns them as lists
 

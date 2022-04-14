@@ -1,2 +1,5 @@
 pandas
 scipy
+sklearn
+matplotlib
+seaborn
