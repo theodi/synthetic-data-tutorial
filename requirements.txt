@@ -1,6 +1,2 @@
-matplotlib==3.0.3
-numpy==1.16.2
-pandas==0.24.2
-scipy==1.2.1
-seaborn==0.9.0
-sklearn
+pandas
+scipy
